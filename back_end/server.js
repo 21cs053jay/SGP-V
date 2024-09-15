@@ -12,7 +12,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI
+  // ,   { useNewUrlParser: true, useUnifiedTopology: true }
+  )
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
@@ -58,18 +60,19 @@ app.post('/admin/login', async (req, res) => {
 });
 
 // Change Password Route (No authentication required for this use case)
-app.post('/admin/change-password', async (req, res) => {
+app.post('/admin/changepassword', async (req, res) => {
   const { adminId, newPassword } = req.body;
 
   try {
     const admin = await Admin.findOne({ adminId });
+    console.log(adminId);
     if (!admin) return res.status(400).json({ message: 'Admin not found' });
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     admin.password = hashedPassword;
     await admin.save();
 
-    res.json({ message: 'Password changed successfully' });
+    return res.json({ message: 'Password changed successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

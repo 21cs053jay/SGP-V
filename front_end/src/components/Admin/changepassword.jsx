@@ -27,7 +27,7 @@ const ChangePassword = () => {
 
     try {
       // Make a request to the backend to change the password
-      const response = await fetch('http://localhost:3000/admin/changepassword', {  // Change URL if needed
+      const response = await fetch('http://localhost:5000/admin/changepassword', {  // Change URL if needed
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
