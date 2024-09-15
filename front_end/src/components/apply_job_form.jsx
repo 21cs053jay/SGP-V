@@ -4,7 +4,8 @@ const JobApplicationForm = () => {
     return (
         <div className='w-full flex flex-col'>
             <MyNavbar/>
-
+{/* <div className="container mx-auto p-6">
+<MyNavbar /> */}
         <div className="max-w-5xl mx-auto px-4 py-10">
             {/* Header Section */}
             <h2 className="text-2xl font-semibold text-blue-600 mb-2">Apply Now For Job Opening</h2>
@@ -125,14 +126,70 @@ const JobApplicationForm = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="md:col-span-2">
+                {/* <div className="md:col-span-2">
                     <button
                         type="submit"
                         className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-300"
                         >
                         Submit Application
                     </button>
-                </div>
+                </div> */}
+
+                {/* Mobile */}
+                <div className="flex flex-col">
+                        <label htmlFor="mobile" className="mb-2 text-sm font-semibold">Mobile *</label>
+                        <input
+                            type="text"
+                            id="mobile"
+                            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="eg. [0] - [9999999999]"
+                        />
+                    </div>
+
+                     {/* E-Mail */}
+                     <div className="flex flex-col">
+                        <label htmlFor="email" className="mb-2 text-sm font-semibold">E-Mail *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Enter Email"
+                        />
+                    </div>
+
+                      {/* Apply For */}
+                      <div className="flex flex-col">
+                        <label htmlFor="applyFor" className="mb-2 text-sm font-semibold">Apply For *</label>
+                        <input
+                            type="text"
+                            id="applyFor"
+                            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value="wordpress developer"
+                            readOnly
+                        />
+                    </div>
+
+                     {/* CV Upload */}
+                    <div className="md:col-span-2 flex  flex-col items-center justify-center">
+                        <label htmlFor="cvUpload" className="mb-2 text-sm font-semibold">CV Upload *</label>
+                        <input
+                            type="file"
+                            id="cvUpload"
+                            className="border border-gray-300 rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            accept=".pdf"
+                        />
+                        <small className="text-gray-500 mt-1">Only pdf files are allowed. (Maximum 5 MB)</small>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="md:col-span-2 flex justify-center">
+                        <button
+                            type="submit"
+                            className="w-48 bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600 transition duration-300"
+                        >
+                            Apply Now
+                        </button>
+                    </div>
             </form>
         </div>
 </div>
@@ -140,170 +197,3 @@ const JobApplicationForm = () => {
 }
 
 export default JobApplicationForm;
-
-
-// import React, { useState } from 'react';
-
-// const JobApplicationForm = () => {
-    //     const [formData, setFormData] = useState({
-        //         fullName: '',
-        //         dob: '',
-//         qualification: '',
-//         experience: '',
-//         presentEmployer: '',
-//         industryType: '',
-//         presentSalary: '',
-//         functionalRole: '',
-//         presentLocation: '',
-//         locationPreference: '',
-//     });
-
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setFormData({
-//             ...formData,
-//             [name]: value,
-//         });
-//     };
-
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-//         console.log('Form Data Submitted:', formData);
-//         // Add form submission logic here
-//     };
-
-//     return (
-//         <div className="max-w-4xl mx-auto bg-white p-8 shadow-md mt-10">
-//             <h1 className="text-2xl font-bold text-blue-600 mb-4">Apply Now For Job Opening</h1>
-//             <p className="text-gray-700 mb-6">Fill the following details that match your resume</p>
-//             <p className="text-red-500 mb-4">* All Fields are Necessary</p>
-
-//             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                 {/* Full Name */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Full Name <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="fullName"
-//                         value={formData.fullName}
-//                         onChange={handleChange}
-//                         placeholder="Enter Name"
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* DOB */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         DOB <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="date"
-//                         name="dob"
-//                         value={formData.dob}
-//                         onChange={handleChange}
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* Qualification */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Qualification <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="qualification"
-//                         value={formData.qualification}
-//                         onChange={handleChange}
-//                         placeholder="Enter Qualification"
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* Experience */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Experience <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="number"
-//                         name="experience"
-//                         value={formData.experience}
-//                         onChange={handleChange}
-//                         placeholder="Enter Experience in Years"
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* Present Employer */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Present Employer <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="presentEmployer"
-//                         value={formData.presentEmployer}
-//                         onChange={handleChange}
-//                         placeholder="Enter Present Employer"
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* Industry Type */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Type of Industry <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="industryType"
-//                         value={formData.industryType}
-//                         onChange={handleChange}
-//                         placeholder="eg. CHEMICAL, ENGG, FMCG"
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* Present Salary */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Present Salary <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="presentSalary"
-//                         value={formData.presentSalary}
-//                         onChange={handleChange}
-//                         placeholder="Annual CTC"
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-//                 {/* Functional Role */}
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">
-//                         Functional Role <span className="text-red-500">*</span>
-//                     </label>
-//                     <input
-//                         type="text"
-//                         name="functionalRole"
-//                         value={formData.functionalRole}
-//                         onChange={handleChange}
-//                         placeholder="eg. Maintenance, QC, QA, etc."
-//                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-//                         required
-//                     />
-//                 </div>
-
-
