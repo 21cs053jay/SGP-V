@@ -1,9 +1,64 @@
-// src/components/Admin/Sidebar.jsx
-
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import ConfirmationModal from './ConfirmationModal'; // Adjust the import path as needed
 
 const Sidebar = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    setModalMessage('Are you sure you want to sign out?');
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmSignOut = async () => {
+    setIsModalOpen(false); // Close the modal first
+
+    // Fetch token from local storage
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      setModalMessage('No token found. Please log in again.');
+      setIsModalOpen(true);
+      return;
+    }
+
+    try {
+      // Send sign-out request to server
+      const response = await fetch('http://localhost:5000/admin/signout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Clear token from local storage
+        localStorage.removeItem('token');
+        setModalMessage('Signed out successfully');
+        setIsModalOpen(true);
+
+        // Delay navigation to allow message display
+        setTimeout(() => {
+          navigate('/admin'); // Redirect to login page
+        }, 2500); // 1.5 seconds delay
+      } else {
+        setModalMessage(data.message || 'Failed to sign out');
+        setIsModalOpen(true);
+      }
+    } catch (err) {
+      setModalMessage('Failed to sign out. Please try again later.');
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false); // Close the modal
+  };
+
   return (
     <div className="w-64 h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col border-r border-gray-700">
       <div className="px-6 py-4 text-xl font-bold border-b border-gray-700">
@@ -53,13 +108,20 @@ const Sidebar = () => {
         >
           Change Password
         </Link>
-        <Link
-          to="/admin/logout"
-          className="text-red-500 hover:bg-red-600 hover:text-white px-4 py-2 rounded transition block mt-2 border border-red-500"
+        <button
+          onClick={handleSignOut}
+          className="text-red-500 hover:bg-red-600 hover:text-white px-4 py-2 rounded transition block mt-2 border border-red-500 w-full text-center"
         >
           Signout
-        </Link>
+        </button>
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onConfirm={handleConfirmSignOut}
+        onCancel={handleCancel}
+        message={modalMessage}
+      />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import JobTable from './components/browse_job';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ChangePassword from './components/Admin/changepassword';
 
+
 const App = () => {
   return (
     <AuthProvider>
@@ -52,6 +53,7 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
+          
           </Routes>
         </BrowserRouter>
       </div>

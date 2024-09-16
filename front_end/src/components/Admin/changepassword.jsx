@@ -43,7 +43,7 @@ const ChangePassword = () => {
       if (response.ok) {
         setSuccess('Password changed successfully! Redirecting to login...');
         setTimeout(() => {
-          navigate('/admin_login'); // Redirect to admin login page after success
+          navigate('/admin'); // Redirect to admin login page after success
         }, 2000);
       } else {
         setError(data.message || 'Error changing password');

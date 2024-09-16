@@ -8,10 +8,12 @@ const JobTable = () => {
   const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
+    // Function to fetch jobs from backend
     const fetchJobs = async () => {
       try {
-        const response = await fetch("https://api.example.com/jobs");
+        const response = await fetch("http://localhost:5000/api/jobpost");
         const data = await response.json();
+        console.log(data); // Check the structure here
         setJobs(data);
         setLoading(false);
       } catch (error) {
@@ -20,21 +22,35 @@ const JobTable = () => {
       }
     };
 
+    // Initial fetch of jobs
     fetchJobs();
+
+    // Polling - Fetch jobs every 5 seconds
+    const intervalId = setInterval(() => {
+      fetchJobs();
+    }, 5000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const filteredJobs = jobs.filter((job) => {
+    const qualifications = job.qualifications ? job.qualifications.join(", ") : '';
+    
     return (
-      job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.keyskills.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.qualifications.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.stream.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.jobLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.industryType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.areaOfWork.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.experienceFrom.toString().includes(searchTerm) ||
-      job.experienceTo.toString().includes(searchTerm) ||
-      job.jobDescription.toLowerCase().includes(searchTerm.toLowerCase())
+      (job.jobTitle && job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.keySkills && job.keySkills.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      qualifications.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (job.stream && job.stream.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.jobLocation &&
+        job.jobLocation.state.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.jobLocation &&
+        job.jobLocation.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.industryType && job.industryType.join(", ").toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.experience &&
+        (job.experience.min.toString().includes(searchTerm) ||
+         job.experience.max.toString().includes(searchTerm))) ||
+      (job.jobDescription && job.jobDescription.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
 
@@ -47,9 +63,8 @@ const JobTable = () => {
   };
 
   return (
-    // <div className="container mx-auto p-6" style={{ minHeight: "100vh", overflowY: "scroll" }}>
-       <div className='w-full flex flex-col' style={{ minHeight: "100vh", overflowY: "scroll" }}>
-       <MyNavbar/>
+    <div className="w-full flex flex-col" style={{ minHeight: "100vh", overflowY: "scroll" }}>
+      <MyNavbar />
 
       <input
         type="text"
@@ -68,33 +83,33 @@ const JobTable = () => {
               <thead>
                 <tr>
                   <th className="px-4 py-2 border">Job Title</th>
-                  <th className="px-4 py-2 border">Keyskills</th>
+                  <th className="px-4 py-2 border">Key Skills</th>
                   <th className="px-4 py-2 border">Qualifications</th>
                   <th className="px-4 py-2 border">Stream</th>
                   <th className="px-4 py-2 border">Job Location</th>
                   <th className="px-4 py-2 border">Industry Type</th>
-                  <th className="px-4 py-2 border">Area Of Work</th>
-                  <th className="px-4 py-2 border">Experience From</th>
-                  <th className="px-4 py-2 border">Experience To</th>
+                  <th className="px-4 py-2 border">Experience</th>
                   <th className="px-4 py-2 border">Job Description</th>
                   <th className="px-4 py-2 border">Apply Now</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredJobs.length > 0 ? (
-                  filteredJobs.map((job, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2 border">{job.jobTitle}</td>
-                      <td className="px-4 py-2 border">{job.keyskills}</td>
-                      <td className="px-4 py-2 border">{job.qualifications}</td>
-                      <td className="px-4 py-2 border">{job.stream}</td>
-                      <td className="px-4 py-2 border">{job.jobLocation}</td>
-                      <td className="px-4 py-2 border">{job.industryType}</td>
-                      <td className="px-4 py-2 border">{job.areaOfWork}</td>
-                      <td className="px-4 py-2 border">{job.experienceFrom}</td>
-                      <td className="px-4 py-2 border">{job.experienceTo}</td>
+                  filteredJobs.map((job) => (
+                    <tr key={job.jid}>
+                      <td className="px-4 py-2 border">{job.jobTitle || 'N/A'}</td>
+                      <td className="px-4 py-2 border">{job.keySkills || 'N/A'}</td>
+                      <td className="px-4 py-2 border">{job.qualifications?.join(", ") || 'N/A'}</td>
+                      <td className="px-4 py-2 border">{job.stream || 'N/A'}</td>
                       <td className="px-4 py-2 border">
-                        {job.jobDescription.length > 100 ? (
+                        {(job.jobLocation?.state || 'N/A')}, {(job.jobLocation?.city || 'N/A')}
+                      </td>
+                      <td className="px-4 py-2 border">{job.industryType?.join(", ") || 'N/A'}</td>
+                      <td className="px-4 py-2 border">
+                        {job.experience ? `${job.experience.min} - ${job.experience.max} years` : 'N/A'}
+                      </td>
+                      <td className="px-4 py-2 border">
+                        {job.jobDescription?.length > 100 ? (
                           <div>
                             {job.jobDescription.substring(0, 100)}...
                             <button
@@ -105,7 +120,7 @@ const JobTable = () => {
                             </button>
                           </div>
                         ) : (
-                          job.jobDescription
+                          job.jobDescription || 'N/A'
                         )}
                       </td>
                       <td className="px-4 py-2 border">
@@ -117,7 +132,7 @@ const JobTable = () => {
                   ))
                 ) : (
                   <tr>
-                    <td className="px-4 py-2 border" colSpan="11">
+                    <td className="px-4 py-2 border" colSpan="9">
                       No jobs found.
                     </td>
                   </tr>
