@@ -99,7 +99,7 @@ const JobTable = () => {
                     <tr key={job.jid}>
                       <td className="px-4 py-2 border">{job.jobTitle || 'N/A'}</td>
                       <td className="px-4 py-2 border">{job.keySkills || 'N/A'}</td>
-                      <td className="px-4 py-2 border">{job.qualifications?.join(", ") || 'N/A'}</td>
+                      <td className="px-4 py-2 border">{job.qualification?.join(", ") || 'N/A'}</td>
                       <td className="px-4 py-2 border">{job.stream || 'N/A'}</td>
                       <td className="px-4 py-2 border">
                         {(job.jobLocation?.state || 'N/A')}, {(job.jobLocation?.city || 'N/A')}
