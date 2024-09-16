@@ -1,10 +1,9 @@
 // backend/routes/jobPostRoutes.js
-// hii
 const express = require('express');
 const router = express.Router();
 const JobPost = require('../models/jobposted')
 
-// Route to get all job posts
+// Route to get all job posts 
 router.get('/jobPost', async (req, res) => {
   try {
     const jobPosts = await JobPost.find(); // Fetch all job posts from MongoDB
