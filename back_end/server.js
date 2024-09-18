@@ -1,3 +1,5 @@
+//npm install multer
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -6,6 +8,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const JobPost = require('./models/jobposted');
 const jobPostRoutes = require('./routes/jobpostedroutes');
+const jobApplicationRoutes=require('./routes/jobApplicationRoutes')
+// const jobApplication=require('./models/jobApplication')
 require('dotenv').config();
 // const router = express.Router();
 
@@ -118,6 +122,7 @@ app.post('/jobPost', async (req, res) => {
 });
 
 app.use('/api', jobPostRoutes);
+app.use('/api', jobApplicationRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;

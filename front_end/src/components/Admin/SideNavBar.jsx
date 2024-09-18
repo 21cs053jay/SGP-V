@@ -80,7 +80,7 @@ const Sidebar = () => {
           <span>Recent Posted Jobs</span>
         </Link>
         <Link
-          to="/admin/cv-against-jobs"
+          to="/admin/cvagainstjob"
           className="flex items-center space-x-2 text-gray-300 hover:bg-gray-700 hover:text-white px-4 py-2 rounded transition border border-gray-700"
         >
           <span>📊</span>

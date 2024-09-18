@@ -6,6 +6,7 @@ import AdminLogin from './components/Admin/AdminLogin';
 import JobPosting from './components/Admin/JobPosting';
 import { AuthProvider } from './components/Admin/AuthContext'; 
 import ProtectedRoute from './components/Admin/ProtectedRoutes'; 
+import CvAgainstJob from './components/Admin/cvagainstjob';
 import JobTable from './components/browse_job';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -50,6 +51,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <ChangePassword />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/cvagainstjob" 
+              element={
+                <ProtectedRoute>
+                  <CvAgainstJob/>
                 </ProtectedRoute>
               } 
             />
