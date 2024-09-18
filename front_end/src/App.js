@@ -20,7 +20,7 @@ const App = () => {
           <Routes>
             {/* Public Routes */}
             <Route path="/home" element={<Home />} />
-            <Route path="/SubmitCV" element={<JobApplicationForm />} />
+            <Route path="/SubmitCV/:jid" element={<JobApplicationForm />} />
             <Route path="/Browsejobs" element={<JobTable />} />
 
             <Route path="*" element={<Navigate to="/home" />} />
