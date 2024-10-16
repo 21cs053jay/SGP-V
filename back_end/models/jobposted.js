@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//hii
 const jobLocationSchema = new mongoose.Schema({
   state: { type: String, required: true },
   city: { type: String, required: true }
