@@ -14,7 +14,7 @@ const jobApplicationSchema = new mongoose.Schema({
   mobile: { type: String, required: true },
   email: { type: String, required: true },
   applyFor: { type: String },
-  resume: { type: String, required: true } // Path to the uploaded resume
-});
+  resumeFileId: { type: mongoose.Schema.Types.ObjectId, required: true }, // Reference to GridFS file
+}, { timestamps: true });
 
 module.exports = mongoose.model('jobApplication', jobApplicationSchema);

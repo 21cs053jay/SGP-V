@@ -8,6 +8,9 @@ import { AuthProvider } from './components/Admin/AuthContext';
 import ProtectedRoute from './components/Admin/ProtectedRoutes'; 
 import CvAgainstJob from './components/Admin/cvagainstjob';
 import JobTable from './components/browse_job';
+import CreateRePresentative from './components/Admin/create-rp';
+import JobList from './components/Admin/recent-jobs';
+import AdminPanel from './components/Admin/add-locations';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ChangePassword from './components/Admin/changepassword';
@@ -62,12 +65,36 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
-          
+             <Route 
+              path="/admin/create-representative" 
+              element={
+                <ProtectedRoute>
+                  <CreateRePresentative/>
+                </ProtectedRoute>
+              } 
+            />
+           <Route 
+              path="/admin/recent-posted-jobs" 
+              element={
+                <ProtectedRoute>
+                  <JobList/>
+                </ProtectedRoute>
+              } 
+            />
+             <Route 
+              path="/admin/job-locations" 
+              element={
+                <ProtectedRoute>
+                  <AdminPanel/>
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </BrowserRouter>
       </div>
     </AuthProvider>
   );
 };
+
 
 export default App;

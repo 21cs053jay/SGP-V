@@ -73,7 +73,7 @@ const Sidebar = () => {
           <span>Direct CV Received</span>
         </Link>
         <Link
-          to="/admin/recent-jobs"
+          to="/admin/recent-posted-jobs"
           className="flex items-center space-x-2 text-gray-300 hover:bg-gray-700 hover:text-white px-4 py-2 rounded transition border border-gray-700"
         >
           <span>📅</span>
@@ -99,6 +99,15 @@ const Sidebar = () => {
         >
           <span>🌍</span>
           <span>Job Locations</span>
+        </Link>
+
+        {/* New field for Create Re-Presentative */}
+        <Link
+          to="/admin/create-representative"
+          className="flex items-center space-x-2 text-gray-300 hover:bg-gray-700 hover:text-white px-4 py-2 rounded transition border border-gray-700"
+        >
+          <span>👥</span>
+          <span>Create Re-Presentative</span>
         </Link>
       </div>
       <div className="px-6 py-4 border-t border-gray-700">

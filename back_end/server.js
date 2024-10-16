@@ -1,4 +1,7 @@
 //npm install multer
+//npm install multer-gridfs-storage gridfs-stream mongoose --legacy-peer-deps
+
+
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,6 +12,7 @@ const bodyParser = require('body-parser');
 const JobPost = require('./models/jobposted');
 const jobPostRoutes = require('./routes/jobpostedroutes');
 const jobApplicationRoutes=require('./routes/jobApplicationRoutes')
+const addLocationRoutes=require('./routes/addlocationroutes')
 // const jobApplication=require('./models/jobApplication')
 require('dotenv').config();
 // const router = express.Router();
@@ -123,6 +127,7 @@ app.post('/jobPost', async (req, res) => {
 
 app.use('/api', jobPostRoutes);
 app.use('/api', jobApplicationRoutes);
+app.use("/api", addLocationRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
