@@ -16,7 +16,7 @@ const experienceSchema = new mongoose.Schema({
 });
 
 const jobPostSchema = new mongoose.Schema({
-  jid: { type: String, required: true },
+  jid: { type: String, required: true , unique:true },
   jobTitle: { type: String, required: true },
   keySkills: { type: String, required: true },
   qualification: { type: [String], required: true },
