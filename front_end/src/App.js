@@ -26,6 +26,7 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/SubmitCV/:jid" element={<JobApplicationForm />} />
             <Route path="/Browsejobs" element={<JobTable />} />
+            <Route path="/Browsejobs/:homeSearch" element={<JobTable />} />
 
             <Route path="*" element={<Navigate to="/home" />} />
 

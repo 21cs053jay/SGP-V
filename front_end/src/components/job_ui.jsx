@@ -7,17 +7,17 @@ const JobUI = ({ job }) => {
   const navigate = useNavigate();
     console.log(job)
     return (
-      <div className="w-full h-100">
-<div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 grid-rows-2">
+      <div className="w-80 h-100">
+<div className="grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
     <div
       key={job.jid}
-      className="flex flex-col bg-white overflow-clip shadow-md rounded-lg justify-center items-center hover:shadow-lg"
+      className="flex flex-col bg-white overflow-auto shadow-md rounded-lg justify-center items-center hover:shadow-lg"
       >
         <div className="justify-center">
       <img
         src="Job_image.jpg" // Placeholder image URL or job.companyLogo
         alt="Job"
-        className="w-60 h-40 object-fit"
+        className="w-48 h-40 object-scale-fill"
         />
         </div>
       <div className="p-1">

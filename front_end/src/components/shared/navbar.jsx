@@ -116,7 +116,7 @@ import { Link } from 'react-router-dom';
 const MyNavbar = () => {
     return (
         <nav className="sticky top-0 z-50 bg-white shadow w-full">
-            <div className="flex flex-row items-center justify-between py-4">
+            <div className="flex flex-row items-center justify-between py-4 pr-5">
                 {/* Logo */}
                 <div className='flex justify-start pl-4'>
                     <a href="/" className="text-2xl font-bold">
@@ -126,13 +126,13 @@ const MyNavbar = () => {
                 <div className='md:flex flex-row justify-end items-center w-1/2'>
                     {/* Links */}
                     <div className="md:flex flex-row items-center space-x-4">
-                        <Link to="/home" className="border border-blue-600 hover:bg-blue-600 w-20 py-2 rounded-full hover:text-white text-blue-600 transition duration-300">
+                        <Link to="/home" className="w-20 py-2 rounded-full text-blue-600 transition duration-300">
                             Home
                         </Link>
 
                         {/* Dropdown */}
                         <div className="relative group">
-                            <button className="border border-blue-600 hover:bg-blue-600 py-2 rounded-full hover:text-white text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center">
+                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center">
                                 Jobs
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
@@ -150,7 +150,7 @@ const MyNavbar = () => {
 
                         {/* Dropdown */}
                         <div className="relative group">
-                            <button className="border border-blue-600 hover:bg-blue-600 py-2 rounded-full hover:text-white text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center">
+                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center">
                                 About
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
@@ -170,17 +170,34 @@ const MyNavbar = () => {
                         </div>
                     </div>
 
-                    {/* Login and Signup Buttons */}
+                    {/* Dropdown */}
+                    <div className="relative group">
+                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-24 flex flex-row justify-center items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12" stroke='currentColor'></line> <line x1="3" y1="6" x2="21" y2="6" stroke='currentColor'></line><line x1="3" y1="18" x2="21" y2="18" stroke='currentColor'></line></svg>
+                                
+                            </button>
+                            <div className="absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                <Link to="/clients" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                    Login
+                                </Link>
+                                <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                    Singup
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Login and Signup Buttons
                     <div className="flex flex-row justify-center items-center space-x-4 pl-4 pr-4">
                         <Link to="/login" className="w-20 py-2 border border-blue-600 text-blue-600 hover:bg-blue-100 rounded-full transition duration-300">
                             Login
                         </Link>
                         <Link to="/signup" className="border border-blue-600 hover:bg-blue-100 w-20 py-2 rounded-full hover:text-blue-600 text-blue-600 transition duration-300">
                             Signup
-                        </Link>
-                    </div>
+                        </Link> */}
+                    {/* </div> */}
                 </div>
-            </div>
         </nav>
     );
 }
