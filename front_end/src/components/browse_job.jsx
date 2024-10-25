@@ -68,7 +68,7 @@ const JobTable = () => {
   });
 
   return (
-    <div className="w-full flex flex-col" style={{ minHeight: "100vh", overflowY: "scroll" }}>
+    <div className="w-full flex flex-col" style={{ minHeight: "100vh", overflowY: "scroll-hidden" }}>
       {/* Pass handleSearchChange to SearchNavbar to update the search term */}
       <SearchNavbar onSearchChange={handleSearchChange} />
 
@@ -76,7 +76,7 @@ const JobTable = () => {
         {loading ? (
           <p>Loading jobs...</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-center align-middle items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 justify-center align-middle items-stretch">
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
                 console.log(job),

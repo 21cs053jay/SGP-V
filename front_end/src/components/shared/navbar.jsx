@@ -110,35 +110,66 @@
 // }
 
 // export default Navbar
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const MyNavbar = () => {
+    const [isOpen, setIsOpen] = useState(false);   // For mobile menu
+    const [isJobsOpen, setIsJobsOpen] = useState(false);  // For Jobs dropdown
+    const [isAboutOpen, setIsAboutOpen] = useState(false); // For About dropdown
+
     return (
         <nav className="sticky top-0 z-50 bg-white shadow w-full">
-            <div className="flex flex-row items-center justify-between py-4 pr-5">
+            <div className="flex items-center justify-between p-4">
                 {/* Logo */}
                 <div className='flex justify-start pl-4'>
                     <a href="/" className="text-2xl font-bold">
-                        Job<span className="text-[#F83002]">Portal</span>
+                        <span className='text-orange-500'>Job</span><span className="text-purple-600">Portal</span>
                     </a>
                 </div>
-                <div className='md:flex flex-row justify-end items-center w-1/2'>
-                    {/* Links */}
-                    <div className="md:flex flex-row items-center space-x-4">
-                        <Link to="/home" className="w-20 py-2 rounded-full text-blue-600 transition duration-300">
+
+                {/* Mobile menu button */}
+                <div className="block lg:hidden">
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="flex items-center px-3 py-2 rounded text-black-500 hover:text-black-400"
+                    >
+                        <svg
+                            className={`fill-current h-3 w-3 ${isOpen ? "hidden" : "block"}`}
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                        </svg>
+                        <svg
+                            className={`fill-current h-3 w-3 ${isOpen ? "block" : "hidden"}`}
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Menu items (responsive for both mobile and desktop) */}
+                <div className={`w-full block lg:flex lg:items-center lg:w-auto ${isOpen ? "block" : "hidden"}`}>
+                    <div className="text-md lg:flex-grow lg:flex lg:items-center space-x-4">
+                        <Link to="/" className="block mt-4 lg:mt-0 lg:inline-block w-20 py-2 rounded-full text-blue-600 transition duration-300">
                             Home
                         </Link>
 
-                        {/* Dropdown */}
-                        <div className="relative group">
-                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center">
+                        {/* Jobs Dropdown (responsive for both mobile and desktop) */}
+                        <div className="relative block mt-4 lg:mt-0 lg:inline-block">
+                            <button 
+                                onClick={() => setIsJobsOpen(!isJobsOpen)}
+                                className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center lg:inline-flex"
+                            >
                                 Jobs
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            <div className="absolute left-0 mt-2 w-40 bg-white border border-gray-200 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <div className={`absolute left-0 mt-2 w-40 bg-white border border-gray-200 shadow-md z-10 ${isJobsOpen ? "block" : "hidden"}`}>
                                 <Link to="/Browsejobs" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
                                     Browse Jobs
                                 </Link>
@@ -148,20 +179,20 @@ const MyNavbar = () => {
                             </div>
                         </div>
 
-                        {/* Dropdown */}
-                        <div className="relative group">
-                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center">
+                        {/* About Dropdown (responsive for both mobile and desktop) */}
+                        <div className="relative block mt-4 lg:mt-0 lg:inline-block">
+                            <button
+                                onClick={() => setIsAboutOpen(!isAboutOpen)}
+                                className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center lg:inline-flex"
+                            >
                                 About
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            <div className="absolute left-0 mt-2 w-40 bg-white border border-gray-200 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <div className={`absolute left-0 mt-2 w-40 bg-white border border-gray-200 shadow-md z-10 ${isAboutOpen ? "block" : "hidden"}`}>
                                 <Link to="/clients" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
                                     Clients
-                                </Link>
-                                <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
-                                    About Us
                                 </Link>
                                 <Link to="/contact-us" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
                                     Contact Us
@@ -170,37 +201,30 @@ const MyNavbar = () => {
                         </div>
                     </div>
 
-                    {/* Dropdown */}
-                    <div className="relative group">
-                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-24 flex flex-row justify-center items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12" stroke='currentColor'></line> <line x1="3" y1="6" x2="21" y2="6" stroke='currentColor'></line><line x1="3" y1="18" x2="21" y2="18" stroke='currentColor'></line></svg>
-                                
-                            </button>
-                            <div className="absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                                <Link to="/clients" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
-                                    Login
-                                </Link>
-                                <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
-                                    Singup
-                                </Link>
-                            </div>
+                    {/* Login/Signup Dropdown */}
+                    <div className="relative group block mt-4 lg:mt-0 lg:inline-block">
+                        <button className="py-2 rounded-full text-blue-600 transition duration-300 w-28 flex flex-row justify-center items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="3" y1="12" x2="21" y2="12" stroke='currentColor'></line> 
+                                <line x1="3" y1="6" x2="21" y2="6" stroke='currentColor'></line>
+                                <line x1="3" y1="18" x2="21" y2="18" stroke='currentColor'></line>
+                            </svg>
+                        </button>
+                        <div className="absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            <Link to="/login" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                Login
+                            </Link>
+                            <Link to="/signup" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                Signup
+                            </Link>
                         </div>
                     </div>
-
-                    {/* Login and Signup Buttons
-                    <div className="flex flex-row justify-center items-center space-x-4 pl-4 pr-4">
-                        <Link to="/login" className="w-20 py-2 border border-blue-600 text-blue-600 hover:bg-blue-100 rounded-full transition duration-300">
-                            Login
-                        </Link>
-                        <Link to="/signup" className="border border-blue-600 hover:bg-blue-100 w-20 py-2 rounded-full hover:text-blue-600 text-blue-600 transition duration-300">
-                            Signup
-                        </Link> */}
-                    {/* </div> */}
                 </div>
+            </div>
         </nav>
     );
-}
+};
 
 export default MyNavbar;
+
 

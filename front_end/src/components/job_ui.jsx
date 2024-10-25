@@ -15,7 +15,7 @@ const JobUI = ({ job }) => {
       >
         <div className="justify-center">
       <img
-        src="Job_image.jpg" // Placeholder image URL or job.companyLogo
+        src="https://5.imimg.com/data5/JG/BW/MY-64708915/jobs-in-greater-noida-500x500.jpg" // Placeholder image URL or job.companyLogo
         alt="Job"
         className="w-48 h-40 object-scale-fill"
         />
