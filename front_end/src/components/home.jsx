@@ -164,7 +164,7 @@ const Home = () => {
         {/* Job Carousel */}
         <div
           ref={carouselRef}
-          className="flex overflow-scroll scrollbar-hide md:scrollbar-default space-x-6 mx-auto w-11/12"
+          className="flex overflow-x-scroll scrollbar-hide md:scrollbar-default space-x-6 mx-auto w-11/12"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
