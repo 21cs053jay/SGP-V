@@ -1,184 +1,205 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import Sidebar from "./SideNavBar";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Sidebar from './SideNavBar';
+import { PlusIcon } from '@heroicons/react/solid';
 
-const AdminPanel = () => {
-  const [activeForm, setActiveForm] = useState(""); // Track the active form
-  const [data, setData] = useState([]); // Store fetched data
-  const [newEntry, setNewEntry] = useState(""); // Store new entry value
-  const [showPopup, setShowPopup] = useState(false); // Handle popup display
-  const [successMessage, setSuccessMessage] = useState(""); // Success message
-
-  // Mapping for API routes based on form type
-  const apiMapping = {
-    qualifications: "qualifications",
-    streams: "streams",
-    joblocations: "joblocations",
-    industrytypes: "industrytypes",
-    areasofwork: "areasofwork",
-  };
-
-  // Fetch data for the selected form
-  const fetchData = async (formType) => {
-    try {
-      const endpoint = apiMapping[formType];
-      const response = await axios.get(`/api/${endpoint}`);
-      setData(response.data); // Update the data state
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // Handle form selection and data fetching
-  const handleOpenForm = (formType) => {
-    setActiveForm(formType);
-    fetchData(formType); // Fetch the data when a form is opened
-  };
-
-  // Handle closing popup
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setNewEntry("");
-  };
-
-  // Handle adding a new entry
-  const handleAddNewEntry = async (e) => {
-    e.preventDefault();
-    try {
-      const endpoint = apiMapping[activeForm];
-      await axios.post(`/api/${endpoint}`, { [activeForm.slice(0, -1)]: newEntry });
-
-      // Fetch updated data after adding
-      fetchData(activeForm);
-
-      // Display success message and close the popup after 5 seconds
-      setSuccessMessage(`${activeForm.slice(0, -1)} added successfully`);
-      setTimeout(() => {
-        setSuccessMessage(""); // Clear success message
-        handleClosePopup(); // Close popup after success
-      }, 5000); // Close popup after 5 seconds
-    } catch (error) {
-      console.error("Error adding new entry:", error);
-    }
-  };
-
+const Modal = ({ isOpen, onClose, title, children, showAddButton, onAddNew }) => {
+  if (!isOpen) return null;
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white z-10 shadow-lg">
-        <Sidebar />
-      </div>
-
-      {/* Main Content */}
-      <div className="ml-64 flex-1 p-10 overflow-y-auto">
-        <h1 className="text-2xl font-semibold mb-8 text-gray-700">Admin Panel: Manage Information</h1>
-
-        {/* Buttons for opening forms */}
-        <div className="space-y-4">
-          <button
-            className="bg-blue-700 text-white px-4 py-2 w-full rounded-lg hover:bg-blue-600 transition duration-300 shadow-md"
-            onClick={() => handleOpenForm("qualifications")}
-          >
-            Manage Qualifications
-          </button>
-          <button
-            className="bg-blue-700 text-white px-4 py-2 w-full rounded-lg hover:bg-blue-600 transition duration-300 shadow-md"
-            onClick={() => handleOpenForm("streams")}
-          >
-            Manage Streams
-          </button>
-          <button
-            className="bg-blue-700 text-white px-4 py-2 w-full rounded-lg hover:bg-blue-600 transition duration-300 shadow-md"
-            onClick={() => handleOpenForm("joblocations")}
-          >
-            Manage Job Locations
-          </button>
-          <button
-            className="bg-blue-700 text-white px-4 py-2 w-full rounded-lg hover:bg-blue-600 transition duration-300 shadow-md"
-            onClick={() => handleOpenForm("industrytypes")}
-          >
-            Manage Industry Types
-          </button>
-          <button
-            className="bg-blue-700 text-white px-4 py-2 w-full rounded-lg hover:bg-blue-600 transition duration-300 shadow-md"
-            onClick={() => handleOpenForm("areasofwork")}
-          >
-            Manage Areas of Work
-          </button>
-        </div>
-
-        {/* Display fetched data */}
-        {activeForm && (
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">
-              Existing {activeForm.replace("-", " ").toUpperCase()}
-            </h2>
-            <ul className="bg-white shadow-md p-4 rounded-lg">
-              {data.length > 0 ? (
-                data.map((entry, index) => (
-                  <li key={index} className="mb-2">
-                    {entry[activeForm.slice(0, -1)] || entry.name || entry.title}
-                  </li>
-                ))
-              ) : (
-                <p>No data found for {activeForm}.</p>
-              )}
-            </ul>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] max-w-full">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold mb-4">{title}</h2>
+          {showAddButton && (
             <button
-              className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              onClick={() => setShowPopup(true)}
+              className="text-white bg-green-500 p-2 rounded-full hover:bg-green-600 focus:outline-none"
+              onClick={onAddNew}
             >
-              Add New {activeForm.replace("-", " ").toUpperCase().slice(0, -1)}
+              <PlusIcon className="h-5 w-5" />
             </button>
-          </div>
-        )}
-
-        {/* Display success message */}
-        {successMessage && (
-          <div className="mt-4 bg-green-500 text-white p-4 rounded">
-            {successMessage}
-          </div>
-        )}
-
-        {/* Popup for adding a new entry */}
-        {showPopup && (
-          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-20">
-            <div className="bg-white w-96 p-6 rounded shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">
-                Add New {activeForm.replace("-", " ").toUpperCase().slice(0, -1)}
-              </h2>
-              <form onSubmit={handleAddNewEntry}>
-                <label className="block mb-2">
-                  {activeForm.replace("-", " ").toUpperCase().slice(0, -1)}:
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full mb-4"
-                  placeholder={`Enter new ${activeForm.slice(0, -1)}`}
-                  value={newEntry}
-                  onChange={(e) => setNewEntry(e.target.value)}
-                  required
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={handleClosePopup}
-                  className="ml-4 text-gray-600 px-4 py-2 hover:text-red-600"
-                >
-                  Cancel
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
+        <div className="max-h-[400px] overflow-y-auto">{children}</div>
+        <button
+          className="mt-4 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm"
+          onClick={onClose}
+        >
+          Close
+        </button>
       </div>
     </div>
   );
 };
 
-export default AdminPanel;
+const FormPage = () => {
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [qualification, setQualifications] = useState([]);
+  const [stream, setStreams] = useState([]);
+  const [location, setJobLocations] = useState([]);
+  const [industryType, setIndustryTypes] = useState([]);
+  const [areaofwork, setWorkAreas] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalContent, setModalContent] = useState(null);
+  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+  const [newItem, setNewItem] = useState('');
+  const [message, setMessage] = useState('');
+
+  const fetchData = async (endpoint, setData) => {
+    try {
+      const response = await axios.get(`/api/${endpoint}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setMessage('Error fetching data');
+    }
+  };
+
+  const addNewData = async (endpoint, newData, setDataFunction) => {
+    try {
+      const response = await axios.post(`/api/${endpoint}`, newData);
+      setDataFunction((prevData) => [...prevData, response.data]);
+      setMessage('Data inserted successfully');
+    } catch (error) {
+      console.error('Error adding data:', error.response ? error.response.data : error.message);
+      setMessage('Error inserting data');
+    }
+  };
+
+  const handleAddNew = (title) => {
+    setModalTitle(`Add new ${title}`);
+    setIsAddNewModalOpen(true);
+    setMessage('');
+  };
+
+  const handleNewDataSubmit = () => {
+    let newData;
+    switch (modalTitle) {
+      case 'Add new Qualifications':
+        newData = { qualification: newItem };
+        addNewData('qualification', newData, setQualifications);
+        break;
+      case 'Add new Stream':
+        newData = { stream: newItem };
+        addNewData('stream', newData, setStreams);
+        break;
+      case 'Add new Job Location':
+        newData = { location: newItem };
+        addNewData('location', newData, setJobLocations);
+        break;
+      case 'Add new Industry Type':
+        newData = { industryType: newItem };
+        addNewData('industryType', newData, setIndustryTypes);
+        break;
+        case 'Add new Area of Work':
+          newData = { areaofWork: newItem }; // updated field name to match backend
+          addNewData('areaofwork', newData, setWorkAreas);
+          break;
+        
+      default:
+        break;
+    }
+    setIsAddNewModalOpen(false);
+    setNewItem('');
+  };
+
+  const handleCardOpen = async (title) => {
+    setModalTitle(title);
+    setMessage('');
+    switch (title) {
+      case 'qualification':
+        await fetchData('qualification', setQualifications);
+        setModalContent(qualification);
+        break;
+      case 'stream':
+        await fetchData('stream', setStreams);
+        setModalContent(stream);
+        break;
+      case 'location':
+        await fetchData('location', setJobLocations);
+        setModalContent(location);
+        break;
+      case 'industryType':
+        await fetchData('industryType', setIndustryTypes);
+        setModalContent(industryType);
+        break;
+      case 'areaOfWork':
+        await fetchData('areaofwork', setWorkAreas);
+        setModalContent(areaofwork);
+        break;
+      default:
+        break;
+    }
+    setIsModalOpen(true);
+  };
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedCard(null);
+    setModalContent([]);
+    setMessage('');
+  };
+  
+
+  return (
+    <div className="min-h-screen flex bg-gray-50">
+      <Sidebar />
+      <div className="p-8 w-full">
+        <h1 className="text-3xl font-bold mb-6">Job Information Form</h1>
+        {message && <div className="mb-4 text-green-500">{message}</div>}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {['Qualifications', 'Stream', 'Job Location', 'Industry Type', 'Area of Work'].map((item) => (
+            <div key={item} className="border border-gray-200 rounded-lg p-4 shadow-md w-full my-2">
+              <h3 className="text-xl font-semibold mb-2">{item}</h3>
+              <button
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
+                onClick={() => handleCardOpen(item)}
+              >
+                Open
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title={modalTitle}
+        showAddButton={true}
+        onAddNew={() => handleAddNew(modalTitle)}
+      >
+        {modalContent && modalContent.length > 0 ? (
+          <ul className="list-disc pl-5">
+            {modalContent.map((item, index) => (
+              <li key={index}>{item.qualification || item.stream || item.location || item.industryType || item.areaOfWork}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No data available.</p>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={isAddNewModalOpen}
+        onClose={() => setIsAddNewModalOpen(false)}
+        title={modalTitle}
+      >
+        <input
+          type="text"
+          placeholder="Enter new item"
+          className="border border-gray-300 rounded-md p-2 w-full"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+        />
+        <button
+          className="mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          onClick={handleNewDataSubmit}
+        >
+          Add
+        </button>
+      </Modal>
+    </div>
+  );
+};
+
+export default FormPage;

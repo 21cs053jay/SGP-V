@@ -12,7 +12,7 @@ const bodyParser = require('body-parser');
 const JobPost = require('./models/jobposted');
 const jobPostRoutes = require('./routes/jobpostedroutes');
 const jobApplicationRoutes=require('./routes/jobApplicationRoutes')
-const addLocationRoutes=require('./routes/addlocationroutes')
+const jobInfoRoutes=require('./routes/joninforoutes')
 // const jobApplication=require('./models/jobApplication')
 require('dotenv').config();
 // const router = express.Router();
@@ -127,7 +127,7 @@ app.post('/jobPost', async (req, res) => {
 
 app.use('/api', jobPostRoutes);
 app.use('/api', jobApplicationRoutes);
-app.use("/api", addLocationRoutes);
+app.use('/api', jobInfoRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
