@@ -14,6 +14,7 @@ import AdminPanel from './components/Admin/add-locations';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ChangePassword from './components/Admin/changepassword';
+import SubmitCV from './components/submit_cv';
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
           <Routes>
             {/* Public Routes */}
             <Route path="/home" element={<Home />} />
+            <Route path="/SubmitCV" element={<SubmitCV />} />
             <Route path="/SubmitCV/:jid" element={<JobApplicationForm />} />
             <Route path="/Browsejobs" element={<JobTable />} />
             <Route path="/Browsejobs/:homeSearch" element={<JobTable />} />
