@@ -68,7 +68,7 @@ const JobTable = () => {
   });
 
   return (
-    <div className="w-full flex flex-col" style={{ minHeight: "100vh", overflowY: "scroll-hidden" }}>
+    <div className="w-full flex flex-col" style={{ minHeight: "100vh", overflowY: "scroll" }}>
       {/* Pass handleSearchChange to SearchNavbar to update the search term */}
       <SearchNavbar onSearchChange={handleSearchChange} />
 

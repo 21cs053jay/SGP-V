@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "./SideNavBar";
+import { FaSearch, FaInfoCircle } from "react-icons/fa"; // Import icons
 
 const JobList = () => {
   const [jobPosts, setJobPosts] = useState([]);
@@ -37,21 +38,17 @@ const JobList = () => {
 
   const handleFilterChange = (filter) => {
     setFilterType(filter);
-
     const now = new Date();
     let filteredJobs = [];
-
     if (filter === "week") {
       const lastWeek = new Date(now.setDate(now.getDate() - 7));
-      filteredJobs = jobPosts.filter(job => new Date(job.createdAt) >= lastWeek);
+      filteredJobs = jobPosts.filter((job) => new Date(job.createdAt) >= lastWeek);
     } else if (filter === "month") {
       const lastMonth = new Date(now.setMonth(now.getMonth() - 1));
-      filteredJobs = jobPosts.filter(job => new Date(job.createdAt) >= lastMonth);
+      filteredJobs = jobPosts.filter((job) => new Date(job.createdAt) >= lastMonth);
     } else {
-      // If filter is set to default (empty), show all jobs
       filteredJobs = jobPosts;
     }
-
     const sortedFilteredJobs = sortJobs(filteredJobs, sortOrder);
     setJobPosts(sortedFilteredJobs);
   };
@@ -63,11 +60,10 @@ const JobList = () => {
   const handleSearchSubmit = () => {
     if (searchDate) {
       const filteredJobs = jobPosts.filter(
-        job => new Date(job.createdAt).toISOString().split('T')[0] === searchDate
+        (job) => new Date(job.createdAt).toISOString().split("T")[0] === searchDate
       );
       setJobPosts(sortJobs(filteredJobs, sortOrder));
     } else {
-      // If no date is selected, fetch all jobs again
       setJobPosts(sortJobs(jobPosts, sortOrder));
     }
   };
@@ -92,7 +88,7 @@ const JobList = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Left SideNav (Fixed Position) */}
+      {/* Left SideNav */}
       <div className="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white z-10">
         <Sidebar />
       </div>
@@ -102,9 +98,9 @@ const JobList = () => {
         <h1 className="text-xl font-semibold mb-8 pb-2 border-b text-gray-700">
           All Job Postings
         </h1>
-        
+
+        {/* Filter and Search */}
         <div className="flex justify-end items-center space-x-4 mb-4">
-          {/* Filter Dropdown with Style */}
           <div className="relative inline-block text-left">
             <select
               onChange={(e) => handleFilterChange(e.target.value)}
@@ -116,7 +112,6 @@ const JobList = () => {
             </select>
           </div>
 
-          {/* Search Section */}
           <div className="flex items-center bg-white shadow-md p-2 rounded">
             <input
               type="date"
@@ -126,37 +121,39 @@ const JobList = () => {
             />
             <button
               onClick={handleSearchSubmit}
-              className="bg-green-500 text-white p-2 rounded hover:bg-green-600 ml-2"
+              className="bg-green-500 text-white p-2 rounded hover:bg-green-600 ml-2 flex items-center"
             >
+              <FaSearch className="mr-2" />
               Search
             </button>
           </div>
         </div>
 
-        {/* Table for displaying job posts */}
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="min-w-full table-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2">Job Title</th>
-                <th className="px-4 py-2">Posted By</th>
-                <th className="px-4 py-2">Posted On</th>
-                <th className="px-4 py-2">Actions</th>
+        {/* Job Cards as Table */}
+        <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
+          <table className="table-auto w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200 text-left">
+                <th className="border border-gray-300 p-2">Job Title</th>
+                <th className="border border-gray-300 p-2">Posted By</th>
+                <th className="border border-gray-300 p-2">Posted On</th>
+                <th className="border border-gray-300 p-2 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {jobPosts.map((job, index) => (
-                <tr key={index} className="border-b">
-                  <td className="px-4 py-2">{job.jobTitle}</td>
-                  <td className="px-4 py-2">{job.postedBy}</td>
-                  <td className="px-4 py-2">
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="border border-gray-300 p-2">{job.jobTitle}</td>
+                  <td className="border border-gray-300 p-2">{job.postedBy}</td>
+                  <td className="border border-gray-300 p-2">
                     {new Date(job.createdAt).toLocaleString()}
                   </td>
-                  <td className="px-4 py-2">
+                  <td className="border border-gray-300 p-2 text-right">
                     <button
                       onClick={() => handleShowDetails(job)}
-                      className="text-blue-500 hover:text-blue-700"
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
                     >
+                      <FaInfoCircle className="mr-2" />
                       Show Details
                     </button>
                   </td>
@@ -167,42 +164,62 @@ const JobList = () => {
         </div>
       </div>
 
-      {/* Modal Popup for Job Details */}
+      {/* Modal for Job Details */}
       {showPopup && selectedJob && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl font-semibold mb-4">Job Details</h2>
-            <div className="mb-2">
-              <strong>Job Title:</strong> {selectedJob.jobTitle}
-            </div>
-            <div className="mb-2">
-              <strong>Key Skill:</strong> {selectedJob.keySkills}
-            </div>
-            <div className="mb-2">
-              <strong>Qualification:</strong> {selectedJob.qualification}
-            </div>
-            <div className="mb-2">
-              <strong>Stream:</strong> {selectedJob.stream}
-            </div>
-            <div className="mb-2">
-              <strong>Industry Type:</strong> {selectedJob.industryType}
-            </div>
-            <div className="mb-2">
-              <strong>Posted By:</strong> {selectedJob.postedBy}
-            </div>
-            <div className="mb-2">
-              <strong>Job Location:</strong> {selectedJob.jobLocation.city}, {selectedJob.jobLocation.state}
-            </div>
-            <div className="mb-2">
-              <strong>Salary Range:</strong> {selectedJob.salary.min} - {selectedJob.salary.max}
-            </div>
-            <div className="mb-2">
-              <strong>Experience:</strong> {selectedJob.experience.min} - {selectedJob.experience.max} years
-            </div>
-            <div className="mb-2">
-              <strong>Job Description:</strong> {selectedJob.jobDescription}
-            </div>
-            <div className="flex justify-end">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h2 className="text-2xl font-bold mb-4">Job Details</h2>
+            <table className="table-auto w-full border-collapse border border-gray-300">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Job Title:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.jobTitle}</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Key Skill:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.keySkills}</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Qualification:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.qualification}</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Stream:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.stream}</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Industry Type:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.industryType}</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Posted By:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.postedBy}</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Job Location:</strong></td>
+                  <td className="border border-gray-300 p-2">
+                    {selectedJob.jobLocation.city}, {selectedJob.jobLocation.state}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Salary Range:</strong></td>
+                  <td className="border border-gray-300 p-2">
+                    {selectedJob.salary.min} - {selectedJob.salary.max}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Experience:</strong></td>
+                  <td className="border border-gray-300 p-2">
+                    {selectedJob.experience.min} - {selectedJob.experience.max} years
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 p-2"><strong>Job Description:</strong></td>
+                  <td className="border border-gray-300 p-2">{selectedJob.jobDescription}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="flex justify-end mt-4">
               <button
                 onClick={handleClosePopup}
                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"

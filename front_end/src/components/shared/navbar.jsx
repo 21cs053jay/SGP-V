@@ -154,7 +154,7 @@ const MyNavbar = () => {
                 {/* Menu items (responsive for both mobile and desktop) */}
                 <div className={`w-full block lg:flex lg:items-center lg:w-auto ${isOpen ? "block" : "hidden"}`}>
                     <div className="text-md lg:flex-grow lg:flex lg:items-center space-x-4">
-                        <Link to="/" className="block mt-4 lg:mt-0 lg:inline-block w-20 py-2 rounded-full text-blue-600 transition duration-300">
+                        <Link to="/" className="block mt-4 lg:mt-0 lg:inline-block w-20 py-2 rounded-full text-purple-500 transition duration-300">
                             Home
                         </Link>
 
@@ -162,7 +162,7 @@ const MyNavbar = () => {
                         <div className="relative block mt-4 lg:mt-0 lg:inline-block">
                             <button 
                                 onClick={() => setIsJobsOpen(!isJobsOpen)}
-                                className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center lg:inline-flex"
+                                className="py-2 rounded-full text-purple-500 transition duration-300 w-20 flex flex-row justify-center items-center lg:inline-flex"
                             >
                                 Jobs
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -170,10 +170,10 @@ const MyNavbar = () => {
                                 </svg>
                             </button>
                             <div className={`absolute left-0 mt-2 w-40 bg-white border border-gray-200 shadow-md z-10 ${isJobsOpen ? "block" : "hidden"}`}>
-                                <Link to="/Browsejobs" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                <Link to="/Browsejobs" className="block px-4 py-2 text-purple-500 hover:bg-blue-100 hover:text-blue-800">
                                     Browse Jobs
                                 </Link>
-                                <Link to="/SubmitCV" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                <Link to="/SubmitCV" className="block px-4 py-2 text-purple-500 hover:bg-blue-100 hover:text-blue-800">
                                     Submit Your CV
                                 </Link>
                             </div>
@@ -183,7 +183,7 @@ const MyNavbar = () => {
                         <div className="relative block mt-4 lg:mt-0 lg:inline-block">
                             <button
                                 onClick={() => setIsAboutOpen(!isAboutOpen)}
-                                className="py-2 rounded-full text-blue-600 transition duration-300 w-20 flex flex-row justify-center items-center lg:inline-flex"
+                                className="py-2 rounded-full text-purple-500 transition duration-300 w-20 flex flex-row justify-center items-center lg:inline-flex"
                             >
                                 About
                                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -191,10 +191,10 @@ const MyNavbar = () => {
                                 </svg>
                             </button>
                             <div className={`absolute left-0 mt-2 w-40 bg-white border border-gray-200 shadow-md z-10 ${isAboutOpen ? "block" : "hidden"}`}>
-                                <Link to="/clients" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                <Link to="/clients" className="block px-4 py-2 text-purple-500 hover:bg-blue-100 hover:text-blue-800">
                                     Clients
                                 </Link>
-                                <Link to="/contact-us" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                                <Link to="/contact-us" className="block px-4 py-2 text-purple-500 hover:bg-blue-100 hover:text-blue-800">
                                     Contact Us
                                 </Link>
                             </div>
@@ -203,7 +203,7 @@ const MyNavbar = () => {
 
                     {/* Login/Signup Dropdown */}
                     <div className="relative group block mt-4 lg:mt-0 lg:inline-block">
-                        <button className="py-2 rounded-full text-blue-600 transition duration-300 w-28 flex flex-row justify-center items-center">
+                        <button className="py-2 rounded-full text-purple-500 transition duration-300 w-28 flex flex-row justify-center items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="3" y1="12" x2="21" y2="12" stroke='currentColor'></line> 
                                 <line x1="3" y1="6" x2="21" y2="6" stroke='currentColor'></line>
@@ -211,10 +211,10 @@ const MyNavbar = () => {
                             </svg>
                         </button>
                         <div className="absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                            <Link to="/login" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                            <Link to="/login" className="block px-4 py-2 text-purple-500 hover:bg-blue-100 hover:text-blue-800">
                                 Login
                             </Link>
-                            <Link to="/signup" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
+                            <Link to="/signup" className="block px-4 py-2 text-purple-500 hover:bg-blue-100 hover:text-blue-800">
                                 Signup
                             </Link>
                         </div>

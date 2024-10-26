@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const SearchNavbar = ({ onSearchChange }) => {
-  const [isSearchVisible, setSearchVisible] = useState(false);
+  const [isSearchVisible, setSearchVisible] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Function to toggle the search bar visibility
@@ -19,15 +19,15 @@ const SearchNavbar = ({ onSearchChange }) => {
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow w-full">
-      <div className="flex flex-row items-center justify-between py-4 pr-4">
+      <div className="flex flex-row items-center justify-between p-4">
         {/* Logo */}
-        <div className='flex justify-start pl-4'>
-          <a href="/" className="text-2xl font-bold">
-            Job<span className="text-[#F83002]">Portal</span>
-          </a>
-        </div>
+                <div className='flex justify-start pl-4'>
+                    <a href="/" className="text-2xl font-bold">
+                        <span className='text-orange-500'>Job</span><span className="text-purple-600">Portal</span>
+                    </a>
+                </div>
 
-        <div className='md:flex flex-row justify-end items-center w-1/2'>
+        <div className='text-md md:flex flex-row justify-end items-center w-1/2'>
           {/* Links */}
           <div className="md:flex flex-row items-center space-x-4">
             <a href="/home" className="w-20 py-2 rounded-full text-blue-600 transition duration-300">
@@ -76,7 +76,7 @@ const SearchNavbar = ({ onSearchChange }) => {
                         </div>
 
           {/* Search Button to toggle the search input */}
-          {!isSearchVisible && (
+          {/* {!isSearchVisible && (
             <div className="flex flex-row items-center ml-4">
             <button
               onClick={toggleSearch}
@@ -88,7 +88,7 @@ const SearchNavbar = ({ onSearchChange }) => {
                 Search
             </button>
           </div>
-          )}
+          )} */}
 
           {/* Conditionally rendered search bar */}
           {isSearchVisible && (
@@ -105,7 +105,7 @@ const SearchNavbar = ({ onSearchChange }) => {
 
           {/* Login and Signup Buttons */}
           <div className="relative group">
-                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-24 flex flex-row justify-center items-center">
+                            <button className="py-2 rounded-full text-blue-600 transition duration-300 w-28 flex flex-row justify-center items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="12" x2="21" y2="12" stroke='currentColor'></line> <line x1="3" y1="6" x2="21" y2="6" stroke='currentColor'></line><line x1="3" y1="18" x2="21" y2="18" stroke='currentColor'></line></svg>
                                 
@@ -115,7 +115,7 @@ const SearchNavbar = ({ onSearchChange }) => {
                                     Login
                                 </Link>
                                 <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800">
-                                    Singup
+                                    Signup
                                 </Link>
                             </div>
                         </div>

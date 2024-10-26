@@ -18,7 +18,7 @@ import ChangePassword from './components/Admin/changepassword';
 
 const App = () => {
   return (
-    <AuthProvider>
+     <AuthProvider>
       <div className="App">
         <BrowserRouter>
           <Routes>
@@ -93,7 +93,9 @@ const App = () => {
           </Routes>
         </BrowserRouter>
       </div>
-    </AuthProvider>
+      </AuthProvider>
+
+
   );
 };
 
