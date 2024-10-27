@@ -17,7 +17,7 @@ const AdminLogin = () => {
       const response = await fetch('http://localhost:5000/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminEmail, password, role }),
+        body: JSON.stringify({ adminEmail, password }),
       });
 
       const data = await response.json();
@@ -63,7 +63,7 @@ const AdminLogin = () => {
           <div>
             <label htmlFor="adminEmail" className="block text-gray-700 text-left">Email</label>
             <input
-              type="email"
+              type="text"
               id="adminEmail"
               value={adminEmail}
               onChange={(e) => setAdminEmail(e.target.value)}
