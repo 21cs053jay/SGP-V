@@ -1,8 +1,9 @@
+// CvAgainstJob.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "./SideNavBar";
-import { FaDownload } from "react-icons/fa"; // Import FontAwesome download icon
-import DownloadResumeButton from "./downloadresume"; // Assuming you have this component
+import { FaDownload } from "react-icons/fa";
+import DownloadResumeButton from "./DownloadResumeButton"; // Import the download function
 
 const CvAgainstJob = () => {
   const [formData, setFormData] = useState([]);
@@ -78,38 +79,16 @@ const CvAgainstJob = () => {
                   <td className="py-4 px-6 border-r border-gray-200">
                     {new Date(data.dob).toLocaleDateString()}
                   </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.qualification}
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.experience} years
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.industry}
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.presentLocation}
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.locationPreference}
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.mobile}
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.email}
-                  </td>
-                  <td className="py-4 px-6 border-r border-gray-200">
-                    {data.applyFor}
-                  </td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.qualification}</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.experience} years</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.industry}</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.presentLocation}</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.locationPreference}</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.mobile}</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.email}</td>
+                  <td className="py-4 px-6 border-r border-gray-200">{data.applyFor}</td>
                   <td className="py-4 px-6">
-                    <button
-                      className="flex items-center bg-purple-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                      onClick={() => DownloadResumeButton(data.resumeFileId)}
-                    >
-                      <FaDownload className="mr-2" /> {/* Download Icon */}
-                      Download
-                    </button>
+                    <DownloadResumeButton resumeFileId={data.resumeFileId} />
                   </td>
                 </tr>
               ))}

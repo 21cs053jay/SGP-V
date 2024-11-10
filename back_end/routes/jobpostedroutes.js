@@ -49,4 +49,55 @@ router.get('/jobPosts/:jid', async (req, res) => {
   }
 });
 
+// Route to add a new job post
+router.post('/addJobPosting', async (req, res) => {
+  const answer = req.body;
+  console.log(answer);
+  try {
+    // Destructure the request body
+    const {
+      jid,
+      jobTitle,
+      keySkills,
+      qualification,
+      stream,
+      companyName,
+      jobLocation,
+      industryType,
+      salary,
+      experience,
+      jobDescription,
+      postedBy,
+      phoneNumber,
+      email,
+    } = req.body;
+
+    // Create a new job post instance
+    const jobPost = new JobPost({
+      jid,
+      jobTitle,
+      keySkills,
+      qualification,
+      stream,
+      companyName,
+      jobLocation,
+      industryType,
+      salary,
+      experience,
+      jobDescription,
+      postedBy,
+      phoneNumber,
+      email,
+    });
+
+    // Save the job post to the database
+    await jobPost.save();
+
+    res.status(201).json({ message: 'Job post created successfully', jobPost });
+  } catch (error) {
+    console.error('Error saving job post:', error);
+    res.status(500).json({ error: 'Failed to create job post' });
+  }
+});
+
 module.exports = router;

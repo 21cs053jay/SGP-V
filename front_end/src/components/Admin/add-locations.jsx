@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from './SideNavBar';
-import { PlusIcon } from '@heroicons/react/solid';
+import { PlusIcon } from '@heroicons/react/24/solid'; // Updated for Heroicons v2
 
 const Modal = ({ isOpen, onClose, title, children, showAddButton, onAddNew }) => {
   if (!isOpen) return null;
@@ -91,11 +91,10 @@ const FormPage = () => {
         newData = { industryType: newItem };
         addNewData('industryType', newData, setIndustryTypes);
         break;
-        case 'Add new Area of Work':
-          newData = { areaofWork: newItem }; // updated field name to match backend
-          addNewData('areaofwork', newData, setWorkAreas);
-          break;
-        
+      case 'Add new Area of Work':
+        newData = { areaofWork: newItem };
+        addNewData('areaofwork', newData, setWorkAreas);
+        break;
       default:
         break;
     }
@@ -107,23 +106,23 @@ const FormPage = () => {
     setModalTitle(title);
     setMessage('');
     switch (title) {
-      case 'qualification':
+      case 'Qualifications':
         await fetchData('qualification', setQualifications);
         setModalContent(qualification);
         break;
-      case 'stream':
+      case 'Stream':
         await fetchData('stream', setStreams);
         setModalContent(stream);
         break;
-      case 'location':
+      case 'Job Location':
         await fetchData('location', setJobLocations);
         setModalContent(location);
         break;
-      case 'industryType':
+      case 'Industry Type':
         await fetchData('industryType', setIndustryTypes);
         setModalContent(industryType);
         break;
-      case 'areaOfWork':
+      case 'Area of Work':
         await fetchData('areaofwork', setWorkAreas);
         setModalContent(areaofwork);
         break;
@@ -132,13 +131,13 @@ const FormPage = () => {
     }
     setIsModalOpen(true);
   };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedCard(null);
     setModalContent([]);
     setMessage('');
   };
-  
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -171,7 +170,7 @@ const FormPage = () => {
         {modalContent && modalContent.length > 0 ? (
           <ul className="list-disc pl-5">
             {modalContent.map((item, index) => (
-              <li key={index}>{item.qualification || item.stream || item.location || item.industryType || item.areaOfWork}</li>
+              <li key={index}>{item.qualification || item.stream || item.location || item.industryType || item.areaofWork}</li>
             ))}
           </ul>
         ) : (

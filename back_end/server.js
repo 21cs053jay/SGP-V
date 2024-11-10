@@ -14,12 +14,18 @@ const jobPostRoutes = require('./routes/jobpostedroutes');
 const jobApplicationRoutes=require('./routes/jobApplicationRoutes')
 const jobInfoRoutes=require('./routes/joninforoutes')
 // const jobApplication=require('./models/jobApplication')
+const Representative=require('./routes/handleRepresentativeroute')
+const forgotroute=require('./routes/forgotroute')
 require('dotenv').config();
+const cookieParser=require("cookie-parser")
+const directCvRoutes=require('./routes/ditectCvroute')
 // const router = express.Router();
+const path = require('path');
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { 
@@ -27,6 +33,26 @@ mongoose.connect(process.env.MONGO_URI, {
 })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
+
+
+  const fs = require("fs");
+
+app.get("/api/resumes/:resumeFileId", (req, res) => {
+  const { resumeFileId } = req.params;
+  const filePath = path.join(__dirname, "uploads", `${resumeFileId}.pdf`); // Adjust file path as needed
+
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error("File does not exist");
+      return res.status(404).send("File not found");
+    }
+
+    res.setHeader("Content-Disposition", `attachment; filename=resume-${resumeFileId}.pdf`);
+    res.setHeader("Content-Type", "application/pdf");
+    fs.createReadStream(filePath).pipe(res);
+  });
+});
+
 
 // Admin Schema
 const adminSchema = new mongoose.Schema({
@@ -130,6 +156,15 @@ app.post('/jobPost', async (req, res) => {
 app.use('/api', jobPostRoutes);
 app.use('/api', jobApplicationRoutes);
 app.use('/api', jobInfoRoutes);
+app.use('/api/directcv', directCvRoutes);
+
+app.use('/api/forgot',forgotroute);
+app.use('/api/handleRepresentative',Representative)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// app.use('/api/handleRepresentative',handleRepresentativeRoute)
+app.use('/api/jobPost', jobPostRoutes);
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;

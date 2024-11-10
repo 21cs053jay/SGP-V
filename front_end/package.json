@@ -3,12 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-
     "@headlessui/react": "^2.1.10",
-    "@heroicons/react": "^1.0.6",
-
     "@heroicons/react": "^2.1.5",
-
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-label": "^2.0.2",
@@ -31,6 +27,7 @@
     "react-router-bootstrap": "^0.26.3",
     "react-router-dom": "^6.26.2",
     "react-scripts": "^5.0.1",
+    "react-toastify": "^10.0.6",
     "tailwind-scrollbar-hide": "^1.1.7",
     "ui": "^0.2.4",
     "web-vitals": "^2.1.4"

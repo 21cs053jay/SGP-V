@@ -11,9 +11,13 @@ import JobTable from './components/browse_job';
 import CreateRePresentative from './components/Admin/create-rp';
 import JobList from './components/Admin/recent-jobs';
 import AdminPanel from './components/Admin/add-locations';
+import DirectCvForm from './components/DirectCvForm';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ChangePassword from './components/Admin/changepassword';
+import ForgotPassword from './components/Admin/forgot_pass';
+import CvList from './components/Admin/Directcvreceived';
+import ManageRepresentative from './components/Admin/manage-r';
 
 
 const App = () => {
@@ -27,6 +31,9 @@ const App = () => {
             <Route path="/SubmitCV/:jid" element={<JobApplicationForm />} />
             <Route path="/Browsejobs" element={<JobTable />} />
             <Route path="/Browsejobs/:homeSearch" element={<JobTable />} />
+            <Route path="/Submitcv" element={<DirectCvForm />} />
+
+            
 
             <Route path="*" element={<Navigate to="/home" />} />
 
@@ -58,6 +65,14 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
+             <Route 
+              path="admin/forgot_pass" 
+              element={
+                <ProtectedRoute>
+                  <ForgotPassword />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/admin/cvagainstjob" 
               element={
@@ -66,11 +81,29 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
+
+            <Route 
+              path="/admin/direct-cv" 
+              element={
+                <ProtectedRoute>
+                  <CvList/>
+                </ProtectedRoute>
+              } 
+            />
              <Route 
               path="/admin/create-representative" 
               element={
                 <ProtectedRoute>
                   <CreateRePresentative/>
+                </ProtectedRoute>
+              } 
+            />
+
+             <Route 
+              path="/admin/manage-representative" 
+              element={
+                <ProtectedRoute>
+                  <ManageRepresentative/>
                 </ProtectedRoute>
               } 
             />

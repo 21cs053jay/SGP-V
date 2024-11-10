@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 const AdminLogin = () => {
-  const [adminEmail, setAdminEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('admin');
   const [showPassword, setShowPassword] = useState(false);
@@ -14,10 +14,10 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/admin/login', {
+      const response = await fetch('http://localhost:5000/api/handleRepresentative/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminEmail, password }),
+        body: JSON.stringify({ email, password,role }),
       });
 
       const data = await response.json();
@@ -64,9 +64,9 @@ const AdminLogin = () => {
             <label htmlFor="adminEmail" className="block text-gray-700 text-left">Email</label>
             <input
               type="text"
-              id="adminEmail"
-              value={adminEmail}
-              onChange={(e) => setAdminEmail(e.target.value)}
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 border border-gray-400 rounded-md"
               placeholder="Enter your email"
               required

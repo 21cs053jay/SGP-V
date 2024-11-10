@@ -115,6 +115,10 @@ const Sidebar = () => {
           <HiOutlineUserGroup className="text-xl" />
           <span>Create Representative</span>
         </Link>
+        <Link to="/admin/manage-representative" className="flex items-center space-x-3 hover:bg-indigo-500 dark:hover:bg-indigo-600 px-3 py-2 rounded-lg transition-all duration-200 ease-in-out shadow-2xl text-sm">
+          <HiOutlineUserGroup className="text-xl" />
+          <span>Manage Representative</span>
+        </Link>
       </div>
 
       {/* Sidebar Footer */}
@@ -122,6 +126,10 @@ const Sidebar = () => {
         <Link to="/admin/changepassword" className="flex items-center space-x-3 hover:bg-indigo-500 dark:hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-lg transition-all duration-200 ease-in-out shadow-2xl text-sm">
           <HiOutlineKey className="text-xl" />
           <span>Change Password</span>
+        </Link>
+        <Link to="/admin/forgot_pass" className="flex items-center space-x-3 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-2 rounded-lg transition-all duration-200 ease-in-out shadow-2xl text-sm mt-4">
+          <HiOutlineKey className="text-xl" />
+          <span>Forgot Password</span>
         </Link>
         <button onClick={handleSignOut} className="flex items-center justify-center space-x-3 text-red-600 hover:bg-red-500 hover:text-white px-3 py-2 rounded-lg transition-all duration-200 ease-in-out shadow-2xl mt-4 w-full text-sm">
           <FiLogOut className="text-xl" />

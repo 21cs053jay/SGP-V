@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
-import JobUI from './job_ui';  // Import the JobUI component for individual job display
+import JobUI from './job_ui'; // Enhanced JobUI component for job cards
 import SearchNavbar from "./shared/search_navbar";
 
 const JobTable = () => {
@@ -8,20 +8,17 @@ const JobTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {homeSearch} = useParams();
-
-    useEffect(() => {
-      if (homeSearch!==undefined) setSearchTerm(homeSearch);
-    }, []);
-
+  const { homeSearch } = useParams();
 
   useEffect(() => {
-    // Function to fetch jobs from backend
+    if (homeSearch !== undefined) setSearchTerm(homeSearch);
+  }, [homeSearch]);
+
+  useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/jobPosts");
+        const response = await fetch("http://localhost:5000/api/jobPost/jobPosts");
         const data = await response.json();
-        console.log(data); // Check the structure here
         setJobs(data);
         setLoading(false);
       } catch (error) {
@@ -30,15 +27,8 @@ const JobTable = () => {
       }
     };
 
-    // Initial fetch of jobs
     fetchJobs();
-
-    // Polling - Fetch jobs every 5 seconds
-    const intervalId = setInterval(() => {
-      fetchJobs();
-    }, 5000);
-
-    // Clean up interval on component unmount
+    const intervalId = setInterval(fetchJobs, 5000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -47,40 +37,28 @@ const JobTable = () => {
   };
 
   const filteredJobs = jobs.filter((job) => {
-    const qualifications = job.qualification ? job.qualification.join(", ") : ''; 
-
+    const qualifications = job.qualification ? job.qualification.join(", ") : '';
     return (
       (job.jobTitle && job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (job.companyName && job.companyName.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (job.keySkills && job.keySkills.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      // qualifications.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      // (job.stream && job.stream.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (job.jobLocation &&
-        job.jobLocation.state.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (job.jobLocation &&
-        job.jobLocation.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      // (job.industryType && job.industryType.join(", ").toLowerCase().includes(searchTerm.toLowerCase())) ||
-      // (job.experience &&
-        (job.experience.min.toString().includes(searchTerm)) 
-      //    job.experience.max.toString().includes(searchTerm))) ||
-      // (job.jobDescription && job.jobDescription.toLowerCase().includes(searchTerm.toLowerCase()))
+      (job.jobLocation && job.jobLocation.state.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.jobLocation && job.jobLocation.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (job.experience && job.experience.min.toString().includes(searchTerm))
     );
   });
 
   return (
-    <div className="w-full flex flex-col" style={{ minHeight: "100vh", overflowY: "scroll" }}>
-      {/* Pass handleSearchChange to SearchNavbar to update the search term */}
+    <div className="w-full flex flex-col min-h-screen overflow-y-auto bg-gray-100">
       <SearchNavbar onSearchChange={handleSearchChange} />
-
-      <div className="flex items-stretch justify-center overflow-hidden pt-5">
+      <div className="flex items-center justify-center p-6">
         {loading ? (
           <p>Loading jobs...</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 justify-center align-middle items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
-                console.log(job),
-                <JobUI key={job.jid} job={job} /> // Pass the job object to the JobUI component
+                <JobUI key={job.jid} job={job} />
               ))
             ) : (
               <p>No jobs found.</p>
