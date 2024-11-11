@@ -1,7 +1,7 @@
-// /src/components/AdminCvManagement.jsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import Sidebar from "./SideNavBar";
 import { FaDownload } from 'react-icons/fa';
 
@@ -32,17 +32,114 @@ const AdminCvManagement = () => {
     setShowModal(false);
   };
 
-  const handleDownload = (filePath) => {
-    const fileName = filePath.split('\\').pop(); // Extract the file name from the path
+  const handleDownloadCV = (filePath) => {
+    const fileName = filePath.split('\\').pop();
     window.open(`http://localhost:5000/uploads/${fileName}`, '_blank');
   };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF({
+      orientation: 'landscape', // landscape to fit more columns horizontally
+      unit: 'mm',
+      format: 'a4',
+      margin: 2 // set minimum margin
+    });
   
+    doc.text("Submitted CVs", 10, 10);
+  
+    doc.autoTable({
+      head: [[
+        "Full Name", "DOB", "Qualification", "Experience", "Present Location",
+        "Location Preference", "Mobile", "Present Designation", "Present Employer",
+        "Industry Type", "Salary", "Functional Role"
+      ]],
+      body: cvs.map(cv => ([
+        cv.fullName,
+        cv.dob,
+        cv.qualification,
+        `${cv.experience} years`,
+        cv.presentLocation,
+        cv.locationPreference,
+        cv.mobile,
+        cv.presentDesignation,
+        cv.presentEmployer,
+        cv.industryType,
+        cv.salary,
+        cv.functionalRole
+      ])),
+      startY: 15,
+      margin: { left: 10, right: 10 }, // reduced left and right margins
+      styles: { fontSize: 10, cellPadding: 1 }, // smaller font size and reduced cell padding
+      columnStyles: {
+        0: { cellWidth: 25 }, 1: { cellWidth: 20 }, 2: { cellWidth: 20 },
+        3: { cellWidth: 20 }, 4: { cellWidth: 25 }, 5: { cellWidth: 25 },
+        6: { cellWidth: 23 }, 7: { cellWidth: 25 }, 8: { cellWidth: 25 },
+        9: { cellWidth: 25 }, 10: { cellWidth: 20 }, 11: { cellWidth: 25 },
+
+      }
+    });
+  
+    doc.save("submitted_cvs.pdf");
+  };
+  
+
+  const downloadCSV = () => {
+    const csvRows = [];
+    const headers = [
+      "Full Name", "DOB", "Qualification", "Experience", "Present Location",
+      "Location Preference", "Mobile", "Present Designation", "Present Employer",
+      "Industry Type", "Salary", "Functional Role", "Download CV Link"
+    ];
+    csvRows.push(headers.join(','));
+
+    cvs.forEach(cv => {
+      const row = [
+        cv.fullName,
+        cv.dob,
+        cv.qualification,
+        `${cv.experience} years`,
+        cv.presentLocation,
+        cv.locationPreference,
+        cv.mobile,
+        cv.presentDesignation,
+        cv.presentEmployer,
+        cv.industryType,
+        cv.salary,
+        cv.functionalRole,
+        `http://localhost:5000/uploads/${cv.cvFilePath.split('\\').pop()}`
+      ];
+      csvRows.push(row.map(field => `"${field}"`).join(','));
+    });
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "submitted_cvs.csv";
+    link.click();
+  };
 
   return (
     <div className="flex">
       <Sidebar />
       <div className="w-full p-6">
         <h2 className="text-2xl font-semibold text-blue-600 mb-6">Submitted CVs</h2>
+        
+        <div className="flex mb-4">
+          <button
+            onClick={downloadPDF}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md mr-2"
+          >
+            Download PDF
+          </button>
+          <button
+            onClick={downloadCSV}
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+          >
+            Download CSV
+          </button>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-lg">
             <thead>
@@ -69,7 +166,7 @@ const AdminCvManagement = () => {
                       Show More
                     </button>
                     <button
-                      onClick={() => handleDownload(cv.cvFilePath)}
+                      onClick={() => handleDownloadCV(cv.cvFilePath)}
                       className="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-lg shadow-md transition duration-300 flex items-center"
                     >
                       <FaDownload className="mr-1" /> Download CV
@@ -88,8 +185,7 @@ const AdminCvManagement = () => {
               <h3 className="text-xl font-semibold text-blue-600 mb-4">CV Details</h3>
               <table className="w-full text-left border-collapse">
                 <tbody>
-                  {[
-                    { label: "Full Name", value: selectedCv.fullName },
+                  {[{ label: "Full Name", value: selectedCv.fullName },
                     { label: "DOB", value: selectedCv.dob },
                     { label: "Qualification", value: selectedCv.qualification },
                     { label: "Experience", value: `${selectedCv.experience} years` },
