@@ -20,7 +20,7 @@ import ForgotPassword from './components/Admin/forgot_pass';
 import CvList from './components/Admin/Directcvreceived';
 import ManageRepresentative from './components/Admin/manage-r';
 import SubmitCV from './components/submit_cv';
-
+>>>>>>> 0f4d1c7703e30a6cabc41d1d85bc24d434569ab3
 
 
 const App = () => {
@@ -49,7 +49,7 @@ const App = () => {
               path="/admin_home" 
               element={
                 <ProtectedRoute>
-                  <AdminHome />
+                  <AdminAnalytics />
                 </ProtectedRoute>
               } 
             />

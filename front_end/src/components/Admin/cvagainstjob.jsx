@@ -30,6 +30,73 @@ const CvAgainstJob = () => {
     setFilteredData(filtered);
   }, [searchTerm, formData]);
 
+  const downloadPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4",
+      margin: 2
+    });
+    doc.text("Job Applications", 10, 10);
+    doc.autoTable({
+      head: [[
+        "Full Name", "DOB", "Qualification", "Experience", "Industry",
+        "Present Location", "Location Preference", "Mobile", "Email", "Apply For"
+      ]],
+      body: filteredData.map((data) => [
+        data.fullName,
+        new Date(data.dob).toLocaleDateString(),
+        data.qualification,
+        `${data.experience} years`,
+        data.industry,
+        data.presentLocation,
+        data.locationPreference,
+        data.mobile,
+        data.email,
+        data.applyFor
+      ]),
+      startY: 15,
+      margin: { left: 5, right: 5 },
+      styles: { fontSize: 10, cellPadding: 1 },
+      columnStyles: { 10: { cellWidth: 30 } }
+    });
+    doc.save("job_applications.pdf");
+  };
+
+  const downloadCSV = () => {
+    const csvHeader = [
+      "Full Name", "DOB", "Qualification", "Experience", "Industry",
+      "Present Location", "Location Preference", "Mobile", "Email", "Apply For", "Resume Link"
+    ];
+    const csvRows = filteredData.map((data) => [
+      data.fullName,
+      new Date(data.dob).toLocaleDateString(),
+      data.qualification,
+      `${data.experience} years`,
+      data.industry,
+      data.presentLocation,
+      data.locationPreference,
+      data.mobile,
+      data.email,
+      data.applyFor,
+      `http://localhost:5000/uploads/${data.resumeFileId}`
+    ]);
+
+    const csvContent = [
+      csvHeader.join(","),
+      ...csvRows.map((row) => row.join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute("download", "job_applications.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Function to handle resume download
   const handleDownload = async (resumeFileId) => {
     try {
