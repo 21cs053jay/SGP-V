@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from "./SideNavBar";
-import { FaSearch, FaInfoCircle } from "react-icons/fa"; // Import icons
+import { motion, AnimatePresence } from "framer-motion";
+import { FaSearch, FaInfoCircle, FaTimes } from "react-icons/fa";
+import Sidebar from './SideNavBar';
+
 
 const JobList = () => {
   const [jobPosts, setJobPosts] = useState([]);
@@ -9,15 +11,13 @@ const JobList = () => {
   const [error, setError] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
   const [searchDate, setSearchDate] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [sortOrder, setSortOrder] = useState("desc"); // Default to latest first
-  const [filterType, setFilterType] = useState(""); // State for dropdown filters
+  const [filterType, setFilterType] = useState("");
 
   useEffect(() => {
     const fetchJobPosts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/jobPosts");
-        const sortedJobs = sortJobs(response.data, "desc");
+        const response = await axios.get("http://localhost:5000/api/jobPost/jobPosts");
+        const sortedJobs = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setJobPosts(sortedJobs);
         setLoading(false);
       } catch (err) {
@@ -28,33 +28,20 @@ const JobList = () => {
     fetchJobPosts();
   }, []);
 
-  const sortJobs = (jobs, order) => {
-    return jobs.sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return order === "asc" ? dateA - dateB : dateB - dateA;
-    });
-  };
-
   const handleFilterChange = (filter) => {
-    setFilterType(filter);
     const now = new Date();
-    let filteredJobs = [];
+    let filteredJobs = jobPosts;
+    
     if (filter === "week") {
       const lastWeek = new Date(now.setDate(now.getDate() - 7));
       filteredJobs = jobPosts.filter((job) => new Date(job.createdAt) >= lastWeek);
     } else if (filter === "month") {
       const lastMonth = new Date(now.setMonth(now.getMonth() - 1));
       filteredJobs = jobPosts.filter((job) => new Date(job.createdAt) >= lastMonth);
-    } else {
-      filteredJobs = jobPosts;
     }
-    const sortedFilteredJobs = sortJobs(filteredJobs, sortOrder);
-    setJobPosts(sortedFilteredJobs);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchDate(e.target.value);
+    
+    setJobPosts(filteredJobs);
+    setFilterType(filter);
   };
 
   const handleSearchSubmit = () => {
@@ -62,174 +49,147 @@ const JobList = () => {
       const filteredJobs = jobPosts.filter(
         (job) => new Date(job.createdAt).toISOString().split("T")[0] === searchDate
       );
-      setJobPosts(sortJobs(filteredJobs, sortOrder));
-    } else {
-      setJobPosts(sortJobs(jobPosts, sortOrder));
+      setJobPosts(filteredJobs);
     }
   };
 
-  const handleShowDetails = (job) => {
-    setSelectedJob(job);
-    setShowPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    setSelectedJob(null);
-  };
-
-  if (loading) {
-    return <p>Loading job posts...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
+  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="flex h-screen">
-      {/* Left SideNav */}
-      <div className="fixed top-0 left-0 w-64 h-full bg-gray-800 text-white z-10">
-        <Sidebar />
-      </div>
-
-      {/* Main Content */}
-      <div className="ml-64 flex-1 p-10 overflow-y-auto">
-        <h1 className="text-xl font-semibold mb-8 pb-2 border-b text-gray-700">
-          All Job Postings
-        </h1>
-
-        {/* Filter and Search */}
-        <div className="flex justify-end items-center space-x-4 mb-4">
-          <div className="relative inline-block text-left">
-            <select
+      <Sidebar/>
+    <div className="flex-1  bg-gradient-to-br from-indigo-50 to-purple-100 p-8 overflow-y-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-6xl mx-auto bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden"
+      >
+        {/* Header and Filters */}
+        <div className="p-6 border-b border-gray-200">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">Job Postings</h1>
+          
+          <div className="flex space-x-4">
+            <select 
               onChange={(e) => handleFilterChange(e.target.value)}
-              className="border bg-gray-200 text-gray-700 px-4 py-2 rounded shadow-md hover:bg-gray-300 focus:outline-none"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="">Default</option>
+              <option value="">All Jobs</option>
               <option value="week">Last Week</option>
               <option value="month">Last Month</option>
             </select>
-          </div>
 
-          <div className="flex items-center bg-white shadow-md p-2 rounded">
-            <input
-              type="date"
-              value={searchDate}
-              onChange={handleSearchChange}
-              className="border border-gray-300 p-2 rounded"
-            />
-            <button
-              onClick={handleSearchSubmit}
-              className="bg-green-500 text-white p-2 rounded hover:bg-green-600 ml-2 flex items-center"
-            >
-              <FaSearch className="mr-2" />
-              Search
-            </button>
-          </div>
-        </div>
-
-        {/* Job Cards as Table */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
-          <table className="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-200 text-left">
-                <th className="border border-gray-300 p-2">Job Title</th>
-                <th className="border border-gray-300 p-2">Posted By</th>
-                <th className="border border-gray-300 p-2">Posted On</th>
-                <th className="border border-gray-300 p-2 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {jobPosts.map((job, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="border border-gray-300 p-2">{job.jobTitle}</td>
-                  <td className="border border-gray-300 p-2">{job.postedBy}</td>
-                  <td className="border border-gray-300 p-2">
-                    {new Date(job.createdAt).toLocaleString()}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-right">
-                    <button
-                      onClick={() => handleShowDetails(job)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
-                    >
-                      <FaInfoCircle className="mr-2" />
-                      Show Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modal for Job Details */}
-      {showPopup && selectedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-            <h2 className="text-2xl font-bold mb-4">Job Details</h2>
-            <table className="table-auto w-full border-collapse border border-gray-300">
-              <tbody>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Job Title:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.jobTitle}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Key Skill:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.keySkills}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Qualification:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.qualification}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Stream:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.stream}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Industry Type:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.industryType}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Posted By:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.postedBy}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Job Location:</strong></td>
-                  <td className="border border-gray-300 p-2">
-                    {selectedJob.jobLocation.city}, {selectedJob.jobLocation.state}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Salary Range:</strong></td>
-                  <td className="border border-gray-300 p-2">
-                    {selectedJob.salary.min} - {selectedJob.salary.max}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Experience:</strong></td>
-                  <td className="border border-gray-300 p-2">
-                    {selectedJob.experience.min} - {selectedJob.experience.max} years
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 p-2"><strong>Job Description:</strong></td>
-                  <td className="border border-gray-300 p-2">{selectedJob.jobDescription}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={handleClosePopup}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            <div className="flex items-center space-x-2">
+              <input
+                type="date"
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button 
+                onClick={handleSearchSubmit}
+                className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
               >
-                Close
+                <FaSearch />
               </button>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Job List */}
+        <div className="divide-y divide-gray-200">
+          <AnimatePresence>
+            {jobPosts.map((job, index) => (
+              <motion.div
+                key={job._id}
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                className="p-6 hover:bg-indigo-50/50 transition-colors group"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">{job.jobTitle}</h2>
+                    <div className="text-sm text-gray-600 space-x-4">
+                      <span>{job.postedBy}</span>
+                      <span>{new Date(job.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setSelectedJob(job)}
+                    className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors flex items-center"
+                  >
+                    <FaInfoCircle className="mr-2" /> Details
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      {/* Job Details Modal */}
+      <AnimatePresence>
+        {selectedJob && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            >
+              <div className="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-center">
+                <h2 className="text-2xl font-bold">{selectedJob.jobTitle}</h2>
+                <button 
+                  onClick={() => setSelectedJob(null)}
+                  className="hover:bg-white/20 p-2 rounded-full transition-colors"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              
+              <div className="p-6 space-y-4">
+                {[
+                  { label: "Key Skill", value: selectedJob.keySkills },
+                  { label: "Qualification", value: selectedJob.qualification },
+                  { label: "Stream", value: selectedJob.stream },
+                  { label: "Industry Type", value: selectedJob.industryType },
+                  { label: "Posted By", value: selectedJob.postedBy },
+                  { 
+                    label: "Job Location", 
+                    value: `${selectedJob.jobLocation.city}, ${selectedJob.jobLocation.state}` 
+                  },
+                  { 
+                    label: "Salary Range", 
+                    value: `${selectedJob.salary.min} - ${selectedJob.salary.max}` 
+                  },
+                  { 
+                    label: "Experience", 
+                    value: `${selectedJob.experience.min} - ${selectedJob.experience.max} years` 
+                  },
+                ].map((detail) => (
+                  <div key={detail.label} className="flex justify-between border-b pb-2 last:border-b-0">
+                    <span className="font-semibold text-gray-700">{detail.label}:</span>
+                    <span className="text-gray-600">{detail.value}</span>
+                  </div>
+                ))}
+                
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800">Job Description</h3>
+                  <p className="text-gray-600">{selectedJob.jobDescription}</p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
     </div>
   );
 };

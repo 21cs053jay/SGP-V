@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import Sidebar from './SideNavBar'; // Ensure the import path is correct for your project
+import { motion } from 'framer-motion';
+import { 
+  FaUserTie, 
+  FaEnvelope, 
+  FaLock, 
+  FaCheckCircle 
+} from 'react-icons/fa';
+import Sidebar from './SideNavBar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CreateRepresentative = () => {
   const [formData, setFormData] = useState({
-    role: 'Representative', // Default role set to Representative (staff)
+    role: 'Representative',
     name: '',
     email: '',
     password: '',
-    confirmPassword: '', // New field for confirming password
+    confirmPassword: '',
   });
 
   const handleChange = (e) => {
@@ -45,106 +52,170 @@ const CreateRepresentative = () => {
     }
   };
 
+  const inputVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen bg-gray-100 from-slate-50 via-white to-blue-50">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Form section */}
-      <div className="flex-1 p-8">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex-1 p-8 flex items-center justify-center"
+      >
         <ToastContainer />
-        <div className="max-w-md mx-auto bg-white p-8 border border-gray-300 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-6 text-left">Create Representative</h2>
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", damping: 10, stiffness: 100 }}
+          className="w-full max-w-md bg-white p-10 rounded-2xl shadow-2xl border border-slate-100"
+        >
+          <motion.h2 
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600"
+          >
+            Create Representative
+          </motion.h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             {/* Select Role */}
-            <div>
-              <label htmlFor="role" className="block text-gray-700 text-left">Select Role</label>
-              <select
-                id="role"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="Representative">Representative</option>
-              </select>
-            </div>
+            <motion.div 
+              variants={inputVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <label className="block text-slate-700 font-semibold mb-2 flex items-center">
+                <FaUserTie className="mr-2 text-emerald-500" />
+                Select Role
+              </label>
+              <div className="relative">
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 appearance-none focus:ring-2 focus:ring-emerald-400 transition-all duration-300"
+                  required
+                >
+                  <option value="Representative">Representative</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
 
-            {/* Enter Name */}
-            <div>
-              <label htmlFor="name" className="block text-gray-700 text-left">Enter Name</label>
+            {/* Name Input */}
+            <motion.div
+              variants={inputVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <label className="block text-slate-700 font-semibold mb-2 flex items-center">
+                <FaUserTie className="mr-2 text-blue-500" />
+                Enter Name
+              </label>
               <input
                 type="text"
-                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter representative's name"
+                placeholder="Representative's name"
+                className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-400 transition-all duration-300"
                 required
               />
-            </div>
+            </motion.div>
 
-            {/* Enter Email */}
-            <div>
-              <label htmlFor="email" className="block text-gray-700 text-left">Enter Email</label>
+            {/* Email Input */}
+            <motion.div
+              variants={inputVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <label className="block text-slate-700 font-semibold mb-2 flex items-center">
+                <FaEnvelope className="mr-2 text-orange-500" />
+                Enter Email
+              </label>
               <input
                 type="email"
-                id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter representative's email"
+                placeholder="Representative's email"
+                className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-400 transition-all duration-300"
                 required
               />
-            </div>
+            </motion.div>
 
-            {/* Enter Password */}
-            <div>
-              <label htmlFor="password" className="block text-gray-700 text-left">Enter Password</label>
+            {/* Password Input */}
+            <motion.div
+              variants={inputVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <label className="block text-slate-700 font-semibold mb-2 flex items-center">
+                <FaLock className="mr-2 text-purple-500" />
+                Enter Password
+              </label>
               <input
                 type="password"
-                id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter representative's password"
+                placeholder="Enter password"
+                className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-purple-400 transition-all duration-300"
                 required
               />
-            </div>
+            </motion.div>
 
-            {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-gray-700 text-left">Confirm Password</label>
+            {/* Confirm Password Input */}
+            <motion.div
+              variants={inputVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <label className="block text-slate-700 font-semibold mb-2 flex items-center">
+                <FaCheckCircle className="mr-2 text-pink-500" />
+                Confirm Password
+              </label>
               <input
                 type="password"
-                id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Confirm password"
+                className="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-pink-400 transition-all duration-300"
                 required
               />
-            </div>
+            </motion.div>
 
             {/* Submit Button */}
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Create Representative
-              </button>
-            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold py-3 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-300 transform shadow-lg"
+            >
+              Create Representative
+            </motion.button>
           </form>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

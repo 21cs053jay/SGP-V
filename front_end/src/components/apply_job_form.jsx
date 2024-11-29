@@ -714,7 +714,7 @@ const JobApplicationForm = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/jobPosts/${jid}`);
+        const response = await axios.get(`http://localhost:5000/api/jobPost/jobPosts/${jid}`);
         const data = response.data;
         setJob(data);
         setLoading(false);
@@ -757,7 +757,7 @@ const JobApplicationForm = () => {
     data.append("jobDetails", JSON.stringify(formData));
 
     try {
-      const response = await axios.post("http://localhost:5000/api/submitApplication", data, {
+      const response = await axios.post("http://localhost:5000/api/apply/submitApplication", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

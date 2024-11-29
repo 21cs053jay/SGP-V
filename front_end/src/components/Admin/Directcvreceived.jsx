@@ -41,9 +41,9 @@ const AdminCvManagement = () => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="w-full p-6">
-        <h2 className="text-2xl font-semibold text-blue-600 mb-6">Submitted CVs</h2>
-        <div className="overflow-x-auto">
+      <div className="w-full p-6 bg-gray-100">
+        <h2 className="text-2xl font-semibold text-blue-600 mb-6 ">Submitted CVs</h2>
+        <div className="overflow-x-auto ">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-lg">
             <thead>
               <tr className="bg-gray-200">
@@ -96,10 +96,9 @@ const AdminCvManagement = () => {
                     { label: "Present Location", value: selectedCv.presentLocation },
                     { label: "Location Preference", value: selectedCv.locationPreference },
                     { label: "Mobile", value: selectedCv.mobile },
-                    { label: "Present Designation", value: selectedCv.presentDesignation },
                     { label: "Present Employer", value: selectedCv.presentEmployer },
-                    { label: "Industry Type", value: selectedCv.industryType },
-                    { label: "Salary", value: selectedCv.salary },
+                    { label: "Industry Type", value: selectedCv.industry },
+                    { label: "Salary", value: selectedCv.presentSalary },
                     { label: "Functional Role", value: selectedCv.functionalRole },
                   ].map(({ label, value }) => (
                     <tr key={label} className="border-t">

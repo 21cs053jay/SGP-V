@@ -1,19 +1,18 @@
-// CvAgainstJob.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "./SideNavBar";
 import { FaDownload } from "react-icons/fa";
-import DownloadResumeButton from "./DownloadResumeButton"; // Import the download function
 
 const CvAgainstJob = () => {
   const [formData, setFormData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
+  // Fetch job applications from the backend
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/jobapplications");
+        const response = await axios.get("http://localhost:5000/api/apply/jobapplications");
         setFormData(response.data);
         setFilteredData(response.data);
       } catch (error) {
@@ -23,12 +22,39 @@ const CvAgainstJob = () => {
     fetchData();
   }, []);
 
+  // Filter data based on search term
   useEffect(() => {
     const filtered = formData.filter((data) =>
       data.fullName.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
   }, [searchTerm, formData]);
+
+  // Function to handle resume download
+  const handleDownload = async (resumeFileId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/apply/resumes/${resumeFileId}`, {
+        responseType: "blob", // Ensure we get binary data
+      });
+
+      // Create a temporary URL for the file
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "resume.pdf"); // Set default file name
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up temporary objects
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading resume:", error);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -88,7 +114,13 @@ const CvAgainstJob = () => {
                   <td className="py-4 px-6 border-r border-gray-200">{data.email}</td>
                   <td className="py-4 px-6 border-r border-gray-200">{data.applyFor}</td>
                   <td className="py-4 px-6">
-                    <DownloadResumeButton resumeFileId={data.resumeFileId} />
+                    <button
+                      onClick={() => handleDownload(data.resumeFileId)}
+                      className="flex items-center justify-center bg-purple-500 text-white py-2 px-4 rounded-lg shadow hover:bg-purple-600 transition duration-200"
+                    >
+                      <FaDownload className="mr-2" />
+                      Download
+                    </button>
                   </td>
                 </tr>
               ))}

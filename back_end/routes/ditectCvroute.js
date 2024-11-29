@@ -18,10 +18,12 @@ const upload = multer({ storage });
 // Route to handle form submission
 router.post('/', upload.single('cvFile'), async (req, res) => {
   try {
+    console.log(req.body)
     const newCv = new DirectCv({
       ...req.body,
       cvFilePath: req.file ? req.file.path : null,
     });
+    console.log(newCv)
     await newCv.save();
     res.status(201).json({ message: 'CV submitted successfully' });
   } catch (error) {

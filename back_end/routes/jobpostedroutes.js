@@ -69,7 +69,7 @@ router.post('/addJobPosting', async (req, res) => {
       jobDescription,
       postedBy,
       phoneNumber,
-      email,
+      email,areaOfWork
     } = req.body;
 
     // Create a new job post instance
@@ -88,6 +88,7 @@ router.post('/addJobPosting', async (req, res) => {
       postedBy,
       phoneNumber,
       email,
+      areaOfWork
     });
 
     // Save the job post to the database

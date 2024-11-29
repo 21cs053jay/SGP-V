@@ -12,7 +12,7 @@ const cvSchema = new mongoose.Schema({
   presentDesignation: String,
   presentEmployer: String,
   industryType: String,
-  salary: String,
+  presentSalary: String,
   functionalRole: String,
   cvFilePath: String,
 });

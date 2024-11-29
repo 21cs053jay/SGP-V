@@ -1,195 +1,111 @@
-  // const express = require('express');
-  // const multer = require('multer');
-  // const path = require('path');
-  // const fs = require('fs');
-  // const JobApplication = require('../models/jobApplication');
-  //  // Assuming you have a JobApplication model
+const express = require('express');
+const multer = require('multer');
+const mongoose = require('mongoose');
+const { GridFSBucket } = require('mongodb');
+const JobApplication = require('../models/jobApplication');
 
-  // const router = express.Router();
+const router = express.Router();
 
-  // // Storage configuration for resume uploads
-  // const storage = multer.diskStorage({
-  //   destination: function (req, file, cb) {
-  //     const uploadPath = 'uploads/resumes';
-  //     if (!fs.existsSync(uploadPath)) {
-  //       fs.mkdirSync(uploadPath, { recursive: true });
-  //     }
-  //     cb(null, uploadPath);
-  //   },
-  //   filename: function (req, file, cb) {
-  //     cb(null, Date.now() + path.extname(file.originalname)); // Save file with timestamp
-  //   },
-  // });
+// MongoDB connection string
+const mongoURI = 'mongodb+srv://mananshah737:Manan63@cluster0.jmlzi.mongodb.net/AdminDB?retryWrites=true&w=majority';
 
-  // const upload = multer({
-  //   storage: storage,
-  //   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB file size limit
-  // });
+// Connect to MongoDB
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
 
-  // // Endpoint to handle job application submissions
-  // router.post('/submitApplication', upload.single('resume'), async (req, res) => {
-  //   try {
-  //     // Get the form data from the request body
-  //     const jobDetails = JSON.parse(req.body.jobDetails);
+let gfsBucket;
 
-  //     // Store the form data along with the resume file path
-  //     const newApplication = new JobApplication({
-  //       fullName: jobDetails.fullName,
-  //       dob: jobDetails.dob,
-  //       qualification: jobDetails.qualification,
-  //       experience: jobDetails.experience,
-  //       presentEmployer: jobDetails.presentEmployer,
-  //       industry: jobDetails.industry,
-  //       presentSalary: jobDetails.presentSalary,
-  //       functionalRole: jobDetails.functionalRole,
-  //       presentLocation: jobDetails.presentLocation,
-  //       locationPreference: jobDetails.locationPreference,
-  //       mobile: jobDetails.mobile,
-  //       email: jobDetails.email,
-  //       applyFor: jobDetails.applyFor,
-  //       resume: req.file.path, // Save the resume path
-  //     });
-
-  //     // Save the application in the database
-  //     await newApplication.save();
-
-  //     res.status(200).json({ message: 'Application submitted successfully!' });
-  //   } catch (error) {
-  //     console.error('Error submitting application:', error);
-  //     res.status(500).json({ message: 'Error submitting application.' });
-  //   }
-  // });
-
-
-  // // GET Endpoint to fetch all job applications
-  // router.get('/jobapplications', async (req, res) => {
-  //     try {
-  //       const applications = await JobApplication.find();
-  //       res.status(200).json(applications);
-  //     } catch (error) {
-  //       console.error('Error fetching applications:', error);
-  //       res.status(500).json({ message: 'Error fetching applications.' });
-  //     }
-  //   });
-    
-  //   // GET Endpoint to fetch a specific job application by ID
-  //   router.get('/jobapplications/:id', async (req, res) => {
-  //     try {
-  //       const application = await JobApplication.findById(req.params.id);
-  //       if (!application) {
-  //         return res.status(404).json({ message: 'Application not found.' });
-  //       }
-  //       res.status(200).json(application);
-  //     } catch (error) {
-  //       console.error('Error fetching application:', error);
-  //       res.status(500).json({ message: 'Error fetching application.' });
-  //     }
-  //   });
-    
-
-  // module.exports = router;
-
-
-  const express = require('express');
-  const multer = require('multer');
-  const mongoose = require('mongoose');
-  const Grid = require('gridfs-stream');
-  const { GridFsStorage } = require('multer-gridfs-storage');
-  const JobApplication = require('../models/jobApplication'); // Assuming JobApplication schema exists
-
-  const router = express.Router();
-
-  // MongoDB connection string
-  const mongoURI = 'mongodb+srv://mananshah737:Manan63@cluster0.jmlzi.mongodb.net/AdminDB?retryWrites=true&w=majority';
-
-  // Initialize GridFS
-  let gfs;
-  const conn = mongoose.connection;
-  conn.once('open', () => {
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('resumes'); // Collection where resumes will be stored
+conn.once('open', () => {
+  console.log('MongoDB connected successfully.');
+  gfsBucket = new GridFSBucket(conn.db, {
+    bucketName: 'resumes',
   });
+});
 
-  // GridFS storage configuration for multer
-  const storage = new GridFsStorage({
-    db: conn, // Use the existing mongoose connection instead of the URL
-    file: (req, file) => {
-      return {
-        bucketName: 'resumes', // Files will be stored in the 'resumes' bucket
-        filename: `${Date.now()}-${file.originalname}`, // Define filename
-      };
-    },
-    options: { useUnifiedTopology: true }, // Add options to avoid deprecated warnings
-  });
+// Multer storage configuration for resume uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-  const upload = multer({ storage });
+// POST Endpoint to handle job application submissions
+router.post('/submitApplication', upload.single('resume'), async (req, res) => {
+  try {
+    const jobDetails = JSON.parse(req.body.jobDetails);
 
-  // POST Endpoint to handle job application submissions
-  router.post('/submitApplication', upload.single('resume'), async (req, res) => {
-    try {
-      // Parse job details from the request body
-      const jobDetails = JSON.parse(req.body.jobDetails);
+    const uploadStream = gfsBucket.openUploadStream(req.file.originalname, {
+      contentType: req.file.mimetype,
+    });
 
-      // Create new job application with resume's GridFS file ID
-      const newApplication = new JobApplication({
-        fullName: jobDetails.fullName,
-        dob: jobDetails.dob,
-        qualification: jobDetails.qualification,
-        experience: jobDetails.experience,
-        presentEmployer: jobDetails.presentEmployer,
-        industry: jobDetails.industry,
-        presentSalary: jobDetails.presentSalary,
-        functionalRole: jobDetails.functionalRole,
-        presentLocation: jobDetails.presentLocation,
-        locationPreference: jobDetails.locationPreference,
-        mobile: jobDetails.mobile,
-        email: jobDetails.email,
-        applyFor: jobDetails.applyFor,
-        resumeFileId: req.file.id, // Store the GridFS file ID for the resume
-      });
+    // Write the file buffer to GridFS
+    uploadStream.end(req.file.buffer);
 
-      // Save application to the database
-      await newApplication.save();
+    uploadStream.on('finish', async () => {
+      try {
+        // Save job application with GridFS file ID
+        const newApplication = new JobApplication({
+          fullName: jobDetails.fullName,
+          dob: jobDetails.dob,
+          qualification: jobDetails.qualification,
+          experience: jobDetails.experience,
+          presentEmployer: jobDetails.presentEmployer,
+          industry: jobDetails.industry,
+          presentSalary: jobDetails.presentSalary,
+          functionalRole: jobDetails.functionalRole,
+          presentLocation: jobDetails.presentLocation,
+          locationPreference: jobDetails.locationPreference,
+          mobile: jobDetails.mobile,
+          email: jobDetails.email,
+          applyFor: jobDetails.applyFor,
+          resumeFileId: uploadStream.id, // Use the `id` property of the uploadStream
+        });
 
-      res.status(200).json({ message: 'Application submitted successfully!' });
-    } catch (error) {
-      console.error('Error submitting application:', error);
-      res.status(500).json({ message: 'Error submitting application.' });
-    }
-  });
+        await newApplication.save();
 
-  // GET Endpoint to fetch all job applications
-  router.get('/jobapplications', async (req, res) => {
-    try {
-      const applications = await JobApplication.find();
-      res.status(200).json(applications);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-      res.status(500).json({ message: 'Error fetching applications.' });
-    }
-  });
-
-  // GET Endpoint to fetch resume file by ID from GridFS
-  router.get('/resumes/:id', async (req, res) => {
-    try {
-      const file = await gfs.files.findOne({ _id: mongoose.Types.ObjectId(req.params.id) });
-
-      if (!file || file.length === 0) {
-        return res.status(404).json({ message: 'Resume not found.' });
+        res.status(200).json({ message: 'Application submitted successfully!' });
+      } catch (saveError) {
+        console.error('Error saving application:', saveError);
+        res.status(500).json({ message: 'Error saving application.' });
       }
+    });
 
-      // If file exists, check if it's a resume (by MIME type)
-      if (file.contentType === 'application/pdf' || file.contentType === 'application/msword' || file.contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        // Create a read stream and pipe the file to the response
-        const readStream = gfs.createReadStream({ _id: file._id });
-        readStream.pipe(res);
-      } else {
-        res.status(400).json({ message: 'Not a valid resume format.' });
-      }
-    } catch (error) {
-      console.error('Error fetching resume:', error);
-      res.status(500).json({ message: 'Error fetching resume.' });
-    }
-  });
+    uploadStream.on('error', (uploadError) => {
+      console.error('Error uploading resume to GridFS:', uploadError);
+      res.status(500).json({ message: 'Error uploading resume.' });
+    });
+  } catch (error) {
+    console.error('Error submitting application:', error);
+    res.status(500).json({ message: 'Error submitting application.' });
+  }
+});
 
-  module.exports = router;
+router.get('/jobapplications', async (req, res) => {
+  try {
+    const applications = await JobApplication.find();
+    res.status(200).json(applications);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).json({ message: 'Error fetching applications.' });
+  }
+});
+
+
+// GET Endpoint to fetch resumes by ID
+router.get('/resumes/:id', async (req, res) => {
+  try {
+    const downloadStream = gfsBucket.openDownloadStream(
+      new mongoose.Types.ObjectId(req.params.id) // Use 'new' to create an ObjectId instance
+    );
+
+    downloadStream.on('data', (chunk) => res.write(chunk));
+    downloadStream.on('end', () => res.end());
+    downloadStream.on('error', (error) => {
+      console.error('Error downloading resume:', error);
+      res.status(404).json({ message: 'Resume not found.' });
+    });
+  } catch (error) {
+    console.error('Error fetching resume:', error);
+    res.status(500).json({ message: 'Error fetching resume.' });
+  }
+});
+
+
+module.exports = router;

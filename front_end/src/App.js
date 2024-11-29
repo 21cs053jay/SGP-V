@@ -15,13 +15,12 @@ import DirectCvForm from './components/DirectCvForm';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ChangePassword from './components/Admin/changepassword';
-<<<<<<< HEAD
+
 import ForgotPassword from './components/Admin/forgot_pass';
 import CvList from './components/Admin/Directcvreceived';
 import ManageRepresentative from './components/Admin/manage-r';
-=======
 import SubmitCV from './components/submit_cv';
->>>>>>> 0f4d1c7703e30a6cabc41d1d85bc24d434569ab3
+
 
 
 const App = () => {

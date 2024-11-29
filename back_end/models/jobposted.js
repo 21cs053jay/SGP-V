@@ -30,6 +30,7 @@ const jobPostSchema = new mongoose.Schema({
   postedBy: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   email: { type: String, required: true },
+  areaOfWork: { type: String, required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('JobPost', jobPostSchema);

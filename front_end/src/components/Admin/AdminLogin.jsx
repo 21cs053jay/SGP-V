@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { Eye, EyeOff, Lock, Mail, UserCog } from 'lucide-react';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -14,15 +15,21 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/handleRepresentative/login', {
+      let response;
+      const endpoint =
+        role === 'admin'
+          ? 'http://localhost:5000/admin/login'
+          : 'http://localhost:5000/api/handleRepresentative/login';
+
+      response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password,role }),
+        body: JSON.stringify({ email, password, role }),
+        credentials: 'include',
       });
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', data.token);  // Store JWT
         login();
         navigate('/admin_home');
       } else {
@@ -38,73 +45,129 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200">
-      <div className="w-full max-w-md p-10 space-y-6 bg-white shadow-2xl border-2 border-gray-300 rounded-lg">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-6">Login</h2>
-        <p className="text-gray-700 text-center mb-4">Please enter your email, role, and password below</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-4">
+      <div className="w-full max-w-md p-8 space-y-6 
+        bg-white 
+        rounded-2xl 
+        shadow-2xl 
+        border 
+        border-gray-100 
+        transition-all 
+        duration-300 
+        hover:shadow-4xl 
+        transform 
+        hover:-translate-y-2
+        relative 
+        overflow-hidden
+      ">
+        {/* Gradient Background Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-50 -z-10"></div>
+        
+        <div className="text-center">
+          <h2 className="text-4xl pb-2 font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
+            Login
+          </h2>
+          <p className="text-gray-500 mb-6">
+            Access your admin dashboard
+          </p>
+        </div>
 
-        {error && <p className="text-red-500 text-center">{error}</p>}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg text-center animate-pulse">
+            {error}
+          </div>
+        )}
 
-        <form className="space-y-6" onSubmit={handleLogin}>
-          <div>
-            <label htmlFor="role" className="block text-gray-700 text-left">Role</label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full mt-1 p-2 border border-gray-400 rounded-md"
-              required
-            >
-              <option value="admin">Admin</option>
-              <option value="representative">Representative</option>
-            </select>
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="relative">
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+              Role
+            </label>
+            <div className="relative">
+              <UserCog className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full pl-10 p-3 border border-gray-300 rounded-lg 
+                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 
+                  transition duration-300 
+                  appearance-none"
+                required
+              >
+                <option value="admin">Admin</option>
+                <option value="representative">Representative</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="adminEmail" className="block text-gray-700 text-left">Email</label>
-            <input
-              type="text"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-400 rounded-md"
-              placeholder="Enter your email"
-              required
-            />
+          <div className="relative">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              Email
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-10 p-3 border border-gray-300 rounded-lg 
+                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 
+                  transition duration-300"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-gray-700 text-left">Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-400 rounded-md"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="showPassword"
-              checked={showPassword}
-              onChange={togglePasswordVisibility}
-              className="mr-2"
-            />
-            <label htmlFor="showPassword" className="text-gray-700">Show Password</label>
+          <div className="relative">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-10 p-3 border border-gray-300 rounded-lg 
+                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 
+                  transition duration-300"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600"
+            className="w-full py-3 px-4 
+              bg-gradient-to-r from-blue-600 to-purple-600 
+              text-white font-bold rounded-lg 
+              hover:from-blue-700 hover:to-purple-700 
+              focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+              transition duration-300 
+              transform hover:scale-[1.02] 
+              active:scale-[0.98]"
           >
-            Login
+            Sign In
           </button>
         </form>
-        <p className="text-sm text-center text-gray-500 mt-6">Powered by <span className="font-semibold">Pooja Infotech</span></p>
+
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-500">
+            Powered by <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Pooja Infotech</span>
+          </p>
+        </div>
       </div>
     </div>
   );
